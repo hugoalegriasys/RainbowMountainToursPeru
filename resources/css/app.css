@@ -1,0 +1,9 @@
+@import "tailwindcss" theme(static);
+@source "../../app/**/*.php";
+@source "../**/*.blade.php";
+@source "../**/*.js";
+
+/* Agrega esto al final de tu app.css */
+body {
+  @apply bg-blue-200 transition-colors duration-500;
+}
