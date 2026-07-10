@@ -23,24 +23,10 @@
         @yield('content')
       </main>
 
-
-  @php(do_action('get_footer'))
-  @include('sections.footer')
-</body>
-
+      @php(do_action('get_footer'))
       @include('sections.footer')
     </div>
 
-    @php(do_action('get_footer'))
     @php(wp_footer())
-
-    <div class="bg-red-500 text-white p-8 mt-10 rounded-xl shadow-lg text-center">
-    <h2 class="text-4xl font-bold">
-        ¡Hola Vite! 🚀 El HMR está funcionando.
-    </h2>
-    <p class="mt-4 text-red-100">
-        Si cambio bg-red-500 a bg-green-500 en mi editor, esto cambiará de color instantáneamente.
-    </p>
-</div>
   </body>
 </html>

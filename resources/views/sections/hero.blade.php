@@ -1,27 +1,59 @@
-<section class="relative min-h-[520px] flex items-center justify-center bg-[#333] bg-cover bg-center bg-no-repeat" style="background-image: url('https://images.unsplash.com/photo-1526392060635-9d6019884377?q=80&w=1920&auto=format&fit=crop');">
+@php
+  $home_id = get_option('page_on_front');
+
+  $titulo_principal = get_field('titulo_principal', $home_id);
+  $descripcion_titulo_principal = get_field('descripcion_titulo_principal', $home_id);
+  $texto_boton1 = get_field('texto_boton1', $home_id);
+  $texto_boton2 = get_field('texto_boton2', $home_id);
   
-  <!-- Overlay oscuro -->
+  // Nuevo campo para el video
+  $video_hero = get_field('video_hero', $home_id);
+@endphp
+
+<section class="relative min-h-screen flex items-center justify-center bg-[#333] overflow-hidden">
+  
+  <!-- Video de Fondo -->
+  @if($video_hero)
+    <!-- playsinline es vital para que el video funcione en iPhones -->
+    <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0">
+      <source src="{{ $video_hero }}" type="video/mp4">
+    </video>
+  @else
+    <!-- Imagen de respaldo por si el cliente olvida subir el video -->
+    <img src="https://images.unsplash.com/photo-1526392060635-9d6019884377?q=80&w=1920&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover z-0" alt="Respaldo Salkantay">
+  @endif
+
+  <!-- Overlay oscuro para que el texto resalte -->
   <div class="absolute inset-0 bg-black/50 z-0"></div>
 
-  <!-- Contenido -->
-  <div class="relative z-10 max-w-[780px] px-6 py-12 text-center text-white flex flex-col items-center gap-6">
+  <!-- Contenido principal -->
+  <div class="relative z-10 max-w-[850px] px-6 pt-32 pb-12 text-center text-white flex flex-col items-center gap-6">
     
-    <h1 class="font-black text-[28px] sm:text-[40px] leading-[1.15] m-0">
-      EXPLORE THE AMAZING RAINBOW MOUNTAIN PERU TOUR
-    </h1>
+    @if($titulo_principal)
+      <h1 class="font-black text-[36px] sm:text-[50px] md:text-[60px] leading-[1.1] m-0 drop-shadow-lg uppercase tracking-wide">
+          {{ $titulo_principal }}
+      </h1>
+    @endif
     
-    <p class="font-normal text-[15px] sm:text-[17px] leading-[1.55] m-0 opacity-95">
-      Experience one of Peru's most breathtaking natural wonders. Join our expert local guides on unforgettable Rainbow Mountain adventures through the stunning Andes, surrounded by spectacular landscapes and authentic cultural experiences.
-    </p>
+    @if($descripcion_titulo_principal)
+      <p class="font-normal text-[16px] sm:text-[18px] leading-[1.6] m-0 opacity-90 max-w-[700px]">
+        {{ $descripcion_titulo_principal }}
+      </p>
+    @endif
 
     <!-- Botones -->
-    <div class="flex flex-wrap items-center justify-center gap-4 mt-2">
-      <a href="#" class="bg-black/60 border border-white text-white font-bold text-[12px] sm:text-[13px] tracking-[0.3px] px-5 py-3.5 sm:px-7 sm:py-4 inline-flex items-center justify-center whitespace-nowrap transition-colors duration-200 hover:bg-white/15">
-        ENQUIRE NOW
-      </a>
-      <a href="#" class="bg-black/60 border border-white text-white font-bold text-[12px] sm:text-[13px] tracking-[0.3px] px-5 py-3.5 sm:px-7 sm:py-4 inline-flex items-center justify-center whitespace-nowrap transition-colors duration-200 hover:bg-white/15">
-        BOOK NOW INCA TRAIL 2026
-      </a>
+    <div class="flex flex-wrap items-center justify-center gap-4 mt-6">
+      @if($texto_boton1)
+        <a href="#" class="bg-[#db5f15] text-white font-bold text-[13px] sm:text-[14px] uppercase tracking-[1px] px-8 py-4 inline-flex items-center justify-center whitespace-nowrap transition-colors duration-200 hover:bg-[#c25411] rounded-sm shadow-lg">
+          {{ $texto_boton1 }}
+        </a>
+      @endif
+      
+      @if($texto_boton2)
+        <a href="#" class="bg-black/40 backdrop-blur-sm border border-white text-white font-bold text-[13px] sm:text-[14px] uppercase tracking-[1px] px-8 py-4 inline-flex items-center justify-center whitespace-nowrap transition-all duration-200 hover:bg-white hover:text-black rounded-sm shadow-lg">
+         {{ $texto_boton2 }}
+        </a>
+      @endif
     </div>
 
   </div>
