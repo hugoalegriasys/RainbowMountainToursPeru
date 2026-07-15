@@ -10,7 +10,7 @@
   $video_hero = get_field('video_hero', $home_id);
 @endphp
 
-<section class="relative min-h-screen flex items-center justify-center bg-[#333] overflow-hidden">
+<section class="relative min-h-screen flex items-center justify-center bg-[#333] overflow-hidden pt-[120px]">
   
   <!-- Video de Fondo -->
   @if($video_hero)

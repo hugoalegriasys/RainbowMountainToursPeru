@@ -10,7 +10,7 @@
   }
 @endphp
 
-<section class="py-20 px-6 bg-[#fcfcfc]">
+<section id="seccion-faqs" class="py-20 px-6 bg-[#fcfcfc]">
   <div class="max-w-[1000px] mx-auto">
     <h2 class="text-center text-[36px] font-medium text-[#1c5067] mb-12">Frequently Asked Questions</h2>
 
