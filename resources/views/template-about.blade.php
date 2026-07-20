@@ -1,4 +1,4 @@
-{{-- Template Name: Plantilla - About Us --}}
+<?php /* Template Name: Plantilla - About Us */ ?>
 
 @extends('layouts.app')
 

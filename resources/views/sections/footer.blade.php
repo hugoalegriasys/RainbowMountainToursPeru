@@ -121,7 +121,7 @@
         <div class="border-t border-dashed border-gray-700 my-6"></div>
         
         @if($btn_text)
-          <a href="{{ $btn_url }}" class="inline-block bg-[#db5f15] hover:bg-[#c25411] text-white font-bold text-[13px] py-3 px-6 rounded transition-colors uppercase tracking-wide text-center">
+          <a href="javascript:void(0);" onclick="document.getElementById('modal-enquire').classList.remove('hidden')" class="inline-block bg-[#db5f15] hover:bg-[#c25411] text-white font-bold text-[13px] py-3 px-6 rounded transition-colors uppercase tracking-wide text-center">
             {{ $btn_text }}
           </a>
         @endif
@@ -162,4 +162,118 @@
 
     </div>
   </div>
+  <!-- OVERLAY DEL MODAL (Fondo oscuro) -->
+<div id="modal-enquire" class="fixed inset-0 z-[9999] hidden bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity">
+  <style>
+  /* 1. Estilo de los títulos (Labels) más suaves */
+  #modal-enquire .wpcf7-form label { 
+    color: #6b7280 !important; /* Gris suave */
+    font-weight: 400 !important;
+    font-size: 13.5px !important;
+    display: block; 
+    margin-bottom: 5px; 
+  }
+  
+  /* 2. Cajas de texto amigables (Bordes claros, sin sombras duras) */
+  #modal-enquire .wpcf7-form input[type="text"],
+  #modal-enquire .wpcf7-form input[type="email"],
+  #modal-enquire .wpcf7-form input[type="tel"],
+  #modal-enquire .wpcf7-form input[type="number"],
+  #modal-enquire .wpcf7-form input[type="date"],
+  #modal-enquire .wpcf7-form select,
+  #modal-enquire .wpcf7-form textarea {
+    width: 100%;
+    border: 1px solid #e5e7eb !important; /* Borde gris súper clarito */
+    border-radius: 3px !important;
+    padding: 10px 14px !important;
+    background-color: #ffffff !important;
+    color: #374151 !important;
+    outline: none !important;
+    box-shadow: none !important; /* Mata cualquier sombra negra por defecto */
+    font-size: 14px !important;
+    transition: all 0.3s ease !important;
+  }
+  
+  /* 3. Efecto Focus (Cuando haces clic para escribir se pone naranja) */
+  #modal-enquire .wpcf7-form input:focus, 
+  #modal-enquire .wpcf7-form select:focus, 
+  #modal-enquire .wpcf7-form textarea:focus {
+    border-color: #db5f15 !important;
+    box-shadow: 0 0 0 1px #db5f15 !important; 
+  }
+  
+  /* 4. Botón de envío idéntico al de tu ejemplo */
+  #modal-enquire .wpcf7-form input[type="submit"] {
+    background-color: #db5f15 !important;
+    color: white !important;
+    font-weight: 500 !important;
+    padding: 12px 35px !important;
+    border-radius: 2px !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: background-color 0.3s !important;
+    margin-top: 15px !important;
+    font-size: 15px !important;
+  }
+  
+  #modal-enquire .wpcf7-form input[type="submit"]:hover {
+    background-color: #c25411 !important;
+  }
+
+  /* 5. Mensajes de error más sutiles */
+  #modal-enquire .wpcf7-not-valid-tip {
+    color: #ef4444 !important;
+    font-size: 12px !important;
+    margin-top: 4px !important;
+  }
+  #modal-enquire .wpcf7-response-output {
+    border-radius: 3px !important;
+    font-size: 14px !important;
+    margin-top: 15px !important;
+  }
+</style>
+  
+  <!-- CAJA DEL MODAL -->
+  <div class="bg-white rounded-lg shadow-2xl w-full max-w-5xl flex flex-col md:flex-row overflow-hidden relative max-h-[95vh]">
+    
+    <!-- Botón Cerrar (X) -->
+    <button onclick="document.getElementById('modal-enquire').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-[#db5f15] z-50 transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <!-- COLUMNA IZQUIERDA (Imagen y Texto) -->
+    <!-- Cambia la URL por tu imagen real -->
+    <div class="hidden md:flex md:w-5/12 bg-cover bg-center relative p-10 flex-col justify-center items-center text-center" style="background-image: url('{{ get_template_directory_uri() }}/public/images/bg-modal.jpg');">
+      <div class="absolute inset-0 bg-black/50"></div>
+      
+      <div class="relative z-10 text-white">
+        <!-- Puedes poner un icono o logo tipo Award aquí -->
+        <h3 class="text-3xl font-light text-white mb-2">
+          Contact Us <span class="text-[#db5f15] font-bold block">Easily!</span>
+        </h3>
+        <div class="w-12 h-1 bg-[#db5f15] mx-auto mb-6"></div>
+        <p class="text-[14.5px] leading-relaxed text-gray-200">
+          Let us arrange everything for you properly. Contact us, and one of our travel specialists will provide you with everything you need to make this an unforgettable experience.
+        </p>
+      </div>
+    </div>
+
+    <!-- COLUMNA DERECHA (Formulario) -->
+    <div class="w-full md:w-7/12 p-8 md:p-10 overflow-y-auto custom-scrollbar text-gray-800 bg-white">
+      <h2 class="text-2xl text-[#db5f15] font-light mb-6">Enquire Now</h2>
+      
+      <!-- LÓGICA DE IDIOMAS PARA EL SHORTCODE -->
+      @if(function_exists('pll_current_language') && pll_current_language() == 'es')
+        <!-- Aquí irá el ID de tu formulario cuando lo crees en español -->
+        {!! do_shortcode('[contact-form-7 id="TU_ID_ESPANOL" title="Consultar Ahora"]') !!}
+      @else
+        <!-- Reemplaza el "123" por el ID real que copiaste en el Paso 2 -->
+        {!! do_shortcode('[contact-form-7 id="353" title="Enquire Now - English"]') !!}
+      @endif
+      
+    </div>
+  </div>
+</div>
 </footer>

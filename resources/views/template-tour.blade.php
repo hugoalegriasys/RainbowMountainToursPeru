@@ -301,7 +301,7 @@
   <div class="tour-header-overlay"></div>
   <div class="tour-header-inner">
     <div class="tour-header-text">
-      <h1 class="tour-header-title">{{ $title }}</h1>
+      <h1 class="tour-header-title">{{ html_entity_decode($title) }}</h1>
       @if($duration) <p class="tour-header-duration">{{ $duration }}</p> @endif
     </div>
   </div>
@@ -359,7 +359,7 @@
     </ul>
     <div class="sidebar-buttons">
       <a class="book-online" href="#booking">Book Online</a>
-      <a class="enquire" href="#contact">Enquire Now</a>
+      <a href="javascript:void(0);" onclick="document.getElementById('modal-enquire').classList.remove('hidden')" class="enquire" href="#contact">Enquire Now</a>
     </div>
     <p class="sidebar-help">Got questions? Reach out anytime via <strong>WhatsApp</strong>.</p>
   </aside>

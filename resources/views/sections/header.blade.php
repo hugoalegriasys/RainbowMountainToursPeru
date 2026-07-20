@@ -32,7 +32,7 @@
   $tours_menu_query = new WP_Query($args_menu);
 @endphp
 
-<header class="absolute inset-x-0 top-0 z-50 bg-transparent text-white">
+<header class="absolute top-0 left-0 w-full z-50 bg-transparent text-white">
   <div class="max-w-7xl mx-auto px-6 pt-8">
 
     <!-- TOP BAR Y LOGO -->
@@ -44,14 +44,54 @@
 
       <div class="flex flex-col items-center md:items-end gap-2">
         
-        @if(!empty($top_links))
+        @if(!empty($top_links) || function_exists('pll_the_languages'))
           <ul class="flex flex-wrap items-center justify-center text-[12px] text-white/90 divide-x divide-white/30 m-0 p-0">
-            @foreach($top_links as $loop_link)
-              <li class="px-3 {{ $loop->first ? 'first:pl-0' : '' }} {{ $loop->last ? 'last:pr-0' : '' }}">
-                <a href="{{ $loop_link['url'] }}" class="hover:text-[#db5f15] transition-colors">{{ $loop_link['text'] }}</a>
-              </li>
-            @endforeach
-          </ul>
+            
+  <!-- ENLACES DE ACF (Travel Blog, Contact, etc.) -->
+  @if(!empty($top_links))
+    @foreach($top_links as $loop_link)
+      
+      <!-- Lógica para detectar si es el enlace de Reseñas -->
+      @php 
+        $is_review = stripos($loop_link['text'], 'review') !== false || stripos($loop_link['text'], 'reseña') !== false; 
+      @endphp
+
+      <li class="px-3 {{ $loop->first ? 'pl-0' : '' }}">
+        <a href="{{ $loop_link['url'] }}" 
+           {!! $is_review ? 'target="_blank" rel="noopener noreferrer"' : '' !!} 
+           class="flex items-center gap-1.5 hover:text-[#db5f15] transition-colors">
+          
+          <!-- Imprime el texto tal cual lo pusiste en WordPress -->
+          <span>{{ $loop_link['text'] }}</span>
+          
+          <!-- Si detecta que es una reseña, le pone la estrellita verde -->
+          @if($is_review)
+
+          @endif
+
+        </a>
+      </li>
+    @endforeach
+  @endif
+
+  <!-- SELECTOR DE IDIOMAS DE POLYLANG -->
+  @if(function_exists('pll_the_languages'))
+    @php $idiomas = pll_the_languages(['raw' => 1]); @endphp
+    @foreach($idiomas as $idioma)
+      <li class="px-3 {{ $loop->last ? 'pr-0' : '' }}">
+        <a href="{{ $idioma['url'] }}" 
+           class="hover:text-[#db5f15] transition-colors {{ $idioma['current_lang'] ? 'font-bold text-[#db5f15]' : '' }}">
+          @if($idioma['slug'] == 'es')
+            Español
+          @else
+            Inglés
+          @endif
+        </a>
+      </li>
+    @endforeach
+  @endif
+
+</ul>
         @endif
 
         <div class="flex items-center gap-5 mt-1 md:mt-0">
@@ -60,7 +100,7 @@
           @endif
           
           @if($btn_text)
-            <a href="{{ $btn_url }}" class="bg-[#db5f15] hover:bg-[#c25411] text-white font-bold text-[16px] px-5 py-2.5 rounded-md leading-none whitespace-nowrap transition-colors uppercase tracking-wide">
+            <a href="javascript:void(0);" onclick="document.getElementById('modal-enquire').classList.remove('hidden')" class="bg-[#db5f15] hover:bg-[#c25411] text-white font-bold text-[16px] px-5 py-2.5 rounded-md leading-none whitespace-nowrap transition-colors uppercase tracking-wide cursor-pointer">
               {{ $btn_text }}
             </a>
           @endif
@@ -69,56 +109,78 @@
       </div>
     </div>
 
-    <!-- NAVEGACIÓN PRINCIPAL -->
-    <nav class="max-w-7xl mx-auto mt-4">
-      <ul class="flex justify-center items-center gap-12">
+<!-- NAVEGACIÓN PRINCIPAL -->
+<nav class="max-w-7xl mx-auto mt-4">
+  <ul class="flex justify-center items-center gap-12">
+    
+    <!-- 1. ITEM DESPLEGABLE: RAINBOW MOUNTAIN (Tu código original) -->
+    <li class="relative group">
+      <a href="#" class="flex items-center gap-1 text-white text-[13.5px] uppercase tracking-[1px] hover:text-[#db5f15] transition-colors whitespace-nowrap font-medium py-2">
+        @if(function_exists('pll_current_language') && pll_current_language() == 'es')
+          Tours Montaña de Colores
+        @else
+          Rainbow Mountain Tours
+        @endif
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 256 256"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path></svg>
+      </a>
+      
+      <!-- SUBMENÚ 100% TRANSPARENTE -->
+      <ul class="absolute left-0 top-full mt-0 w-[280px] bg-transparent py-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-50">
         
-        <!-- 1. ITEM DESPLEGABLE: RAINBOW MOUNTAIN -->
-        <li class="relative group">
-          <a href="#" class="flex items-center gap-1 text-white text-[13.5px] uppercase tracking-[1px] hover:text-[#db5f15] transition-colors whitespace-nowrap font-medium py-2">
-            Rainbow Mountain
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 256 256"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path></svg>
-          </a>
-          
-          <!-- SUBMENÚ 100% TRANSPARENTE -->
-          <ul class="absolute left-0 top-full mt-0 w-[280px] bg-transparent py-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-50 border-t-2 border-[#db5f15]">
-            
-            @if($tours_menu_query->have_posts())
-              @while($tours_menu_query->have_posts()) 
-                @php $tours_menu_query->the_post(); @endphp
-                <li>
-                  <!-- Quitamos el fondo al hover para que se mantenga transparente siempre -->
-                  <a href="{{ get_permalink() }}" class="block px-6 py-2.5 text-[14px] text-white font-medium hover:text-[#db5f15] transition-colors leading-tight drop-shadow-md">
-                    {!! get_the_title() !!}
-                  </a>
-                </li>
-              @endwhile
-              @php wp_reset_postdata(); @endphp
-            @else
-              <li>
-                <span class="block px-6 py-2.5 text-[14px] text-white/70 drop-shadow-md">No tours available yet.</span>
-              </li>
-            @endif
-            
-          </ul>
-        </li>
-
-        <!-- 2. RAINBOW MOUNTAIN FAQ'S -->
-        <li>
-          <a href="#faqs" class="text-white text-[13.5px] uppercase tracking-[1px] hover:text-[#db5f15] transition-colors whitespace-nowrap font-medium py-2">
-            Rainbow Mountain FAQ's
-          </a>
-        </li>
-
-        <!-- 3. ABOUT US -->
-        <li>
-          <a href="#about" class="text-white text-[13.5px] uppercase tracking-[1px] hover:text-[#db5f15] transition-colors whitespace-nowrap font-medium py-2">
-            About Us
-          </a>
-        </li>
-
+        @if($tours_menu_query->have_posts())
+          @while($tours_menu_query->have_posts()) 
+            @php $tours_menu_query->the_post(); @endphp
+            <li>
+              <a href="{{ get_permalink() }}" class="block px-6 py-2.5 text-[14px] text-white font-medium hover:text-[#db5f15] transition-colors leading-tight drop-shadow-md">
+                {!! get_the_title() !!}
+              </a>
+            </li>
+          @endwhile
+          @php wp_reset_postdata(); @endphp
+        @else
+          <li>
+            <span class="block px-6 py-2.5 text-[14px] text-white/70 drop-shadow-md">No tours available yet.</span>
+          </li>
+        @endif
+        
       </ul>
-    </nav>
+    </li>
+
+    <!-- 2. TRAVEL GUIDE (Enlace simple) -->
+    <li>
+      <a href="{{ home_url(function_exists('pll_current_language') && pll_current_language() == 'es' ? '/es/guia-montana-colores/' : '/rainbow-mountain-guide/') }}" class="text-white text-[13.5px] uppercase tracking-[1px] hover:text-[#db5f15] transition-colors whitespace-nowrap font-medium py-2">
+        @if(function_exists('pll_current_language') && pll_current_language() == 'es')
+          Guía de Viaje
+        @else
+          Travel Guide
+        @endif
+      </a>
+    </li>
+
+    <!-- 3. ABOUT US -->
+    <li>
+      <a href="{{ home_url(function_exists('pll_current_language') && pll_current_language() == 'es' ? '/es/sobre-nosotros/' : '/about-us/') }}" class="text-white text-[13.5px] uppercase tracking-[1px] hover:text-[#db5f15] transition-colors whitespace-nowrap font-medium py-2">
+        @if(function_exists('pll_current_language') && pll_current_language() == 'es')
+          Sobre Nosotros
+        @else
+          About Us
+        @endif
+      </a>
+    </li>
+
+    <!-- 4. CONTACT US (Botón Nuevo) -->
+    <li>
+      <a href="{{ home_url(function_exists('pll_current_language') && pll_current_language() == 'es' ? '/es/contacto/' : '/contact/') }}" class="text-white text-[13.5px] uppercase tracking-[1px] hover:text-[#db5f15] transition-colors whitespace-nowrap font-medium py-2">
+        @if(function_exists('pll_current_language') && pll_current_language() == 'es')
+          Contacto
+        @else
+          Contact Us
+        @endif
+      </a>
+    </li>
+
+  </ul>
+</nav>
     
   </div>
 </header>
