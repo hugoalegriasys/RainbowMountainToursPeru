@@ -74,22 +74,25 @@
     @endforeach
   @endif
 
-  <!-- SELECTOR DE IDIOMAS DE POLYLANG -->
-  @if(function_exists('pll_the_languages'))
-    @php $idiomas = pll_the_languages(['raw' => 1]); @endphp
-    @foreach($idiomas as $idioma)
-      <li class="px-3 {{ $loop->last ? 'pr-0' : '' }}">
-        <a href="{{ $idioma['url'] }}" 
-           class="hover:text-[#db5f15] transition-colors {{ $idioma['current_lang'] ? 'font-bold text-[#db5f15]' : '' }}">
-          @if($idioma['slug'] == 'es')
-            Español
-          @else
-            Inglés
-          @endif
-        </a>
-      </li>
-    @endforeach
-  @endif
+<!-- SELECTOR DE IDIOMAS CON BANDERAS NATIVAS DE POLYLANG -->
+@if(function_exists('pll_the_languages'))
+  @php $idiomas = pll_the_languages(['raw' => 1]); @endphp
+  @foreach($idiomas as $idioma)
+    <li class="px-2 {{ $loop->last ? 'pr-0' : '' }}">
+      <a href="{{ $idioma['url'] }}" 
+         class="inline-flex items-center transition-opacity hover:opacity-80 {{ $idioma['current_lang'] ? 'opacity-100' : 'opacity-60' }}"
+         title="{{ $idioma['name'] }}">
+         
+         @if(!empty($idioma['flag']))
+           <img src="{{ $idioma['flag'] }}" alt="{{ $idioma['slug'] }}" style="width: 20px; height: auto; border-radius: 2px; display: inline-block; vertical-align: middle;">
+         @else
+           {{ $idioma['slug'] == 'es' ? 'Español' : 'Inglés' }}
+         @endif
+
+      </a>
+    </li>
+  @endforeach
+@endif
 
 </ul>
         @endif
@@ -170,17 +173,18 @@
 
     <!-- 4. CONTACT US (Botón Nuevo) -->
     <li>
-      <a href="{{ home_url(function_exists('pll_current_language') && pll_current_language() == 'es' ? '/es/contacto/' : '/contact/') }}" class="text-white text-[13.5px] uppercase tracking-[1px] hover:text-[#db5f15] transition-colors whitespace-nowrap font-medium py-2">
-        @if(function_exists('pll_current_language') && pll_current_language() == 'es')
-          Contacto
-        @else
-          Contact Us
-        @endif
-      </a>
+      <a href="{{ get_permalink(pll_get_post(411)) }}" class="text-white text-[13.5px] uppercase tracking-[1px] hover:text-[#db5f15] transition-colors whitespace-nowrap font-medium py-2">
+  @if(function_exists('pll_current_language') && pll_current_language() == 'es')
+    Contacto
+  @else
+    Contact Us
+  @endif
+</a>
     </li>
 
   </ul>
 </nav>
     
   </div>
+  
 </header>

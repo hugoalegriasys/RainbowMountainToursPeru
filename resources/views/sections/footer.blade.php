@@ -45,32 +45,72 @@
 @endphp
 
 <footer class="bg-black text-white pt-16 pb-8 px-6 mt-auto">
-  <div class="max-w-[1200px] mx-auto">
+  <div class="max-w-[1300px] mx-auto">
     
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-4 mb-14 text-[13.3px]">
+    <!-- Cambiamos a Flexbox para un centrado absoluto -->
+    <div class="flex flex-col lg:flex-row lg:justify-center lg:gap-16 xl:gap-24 w-full">
       
-      <!-- Columna 1: Destinations -->
-      <div>
-        <h4 class="font-bold text-[15px] mb-6 uppercase tracking-wide text-white">Destinations</h4>
-        <ul class="flex flex-col gap-3 text-gray-400">
-          @foreach($destinations as $link)
-            <li><a href="{{ $link['url'] }}" class="hover:text-[#db5f15] transition-colors">{{ $link['text'] }}</a></li>
-          @endforeach
-        </ul>
-      </div>
+<!-- COLUMNA 1: DESTINATIONS -->
+<div class="flex flex-col">
+    <h3 class="text-white text-sm font-bold tracking-wider uppercase mb-6">
+        @if(function_exists('pll_current_language') && pll_current_language() == 'es')
+            Destinos
+        @else
+            Destinations
+        @endif
+    </h3>
+    
+    <ul class="flex flex-col space-y-3 text-gray-400 text-[14.5px]">
+        @php
+            // Tu ID base
+            $parent_base_id = 377; // <-- Recuerda poner tu ID aquí
+            
+            $parent_id = $parent_base_id;
+            if (function_exists('pll_get_post')) {
+                $translated_id = pll_get_post($parent_base_id);
+                $parent_id = $translated_id ? $translated_id : -1; 
+            }
 
-      <!-- Columna 2: Useful Information -->
-      <div>
-        <h4 class="font-bold text-[15px] mb-6 uppercase tracking-wide text-white">Useful Information</h4>
-        <ul class="flex flex-col gap-3 text-gray-400">
-          @foreach($useful_info as $link)
-            <li><a href="{{ $link['url'] }}" class="hover:text-[#db5f15] transition-colors">{{ $link['text'] }}</a></li>
-          @endforeach
-        </ul>
-      </div>
+            $args = [
+                'post_type'      => 'page', 
+                'post_parent'    => $parent_id, 
+                'posts_per_page' => 6,
+                'orderby'        => 'menu_order',
+                'order'          => 'ASC',
+                'post_status'    => 'publish',
+            ];
+            $tours_query = new WP_Query($args);
+        @endphp
+
+        @if($tours_query->have_posts())
+            @while($tours_query->have_posts()) @php $tours_query->the_post() @endphp
+                <li>
+                    <a href="{{ get_permalink() }}" class="hover:text-[#db5f15] transition-colors duration-300 whitespace-nowrap">
+                        {!! get_the_title() !!}
+                    </a>
+                </li>
+            @endwhile
+            @php wp_reset_postdata() @endphp
+        @else
+            <li><span class="text-gray-500">No destinations found.</span></li>
+        @endif
+    </ul>
+</div>
+
+<!-- COLUMNA 2: USEFUL INFORMATION -->
+<div class="flex flex-col lg:col-span-2">
+    <h3 class="text-white text-sm font-bold tracking-wider uppercase mb-6 whitespace-nowrap">Useful Information</h3>
+    <ul class="flex flex-col space-y-3 text-gray-400 text-[14.5px]">
+        <li><a href="{{ home_url('/about-us/') }}" class="hover:text-[#db5f15] transition-colors duration-300">About Us</a></li>
+        <li><a href="{{ home_url('/rainbow-mountain-guide/') }}" class="hover:text-[#db5f15] transition-colors duration-300">Travel Guide</a></li>
+        <li><a href="{{ home_url('/faqs/') }}" class="hover:text-[#db5f15] transition-colors duration-300">FAQ's</a></li>
+        <li><a href="{{ home_url('/contact-us/') }}" class="hover:text-[#db5f15] transition-colors duration-300">Contact Us</a></li>
+        <li><a href="{{ home_url('/blog/') }}" class="hover:text-[#db5f15] transition-colors duration-300">Blog</a></li>
+    </ul>
+</div>
 
       <!-- Columna 3: Office Hours -->
-      <div class="lg:pr-4">
+      <div class="flex flex-col max-w-[280px]">
         <h4 class="font-bold text-[15px] mb-6 uppercase tracking-wide text-white">Office Hours (PET)</h4>
         
         @if($address)
@@ -99,11 +139,8 @@
         @endif
       </div>
 
-      <!-- Columna 4: Espaciador -->
-      <div class="hidden lg:block"></div>
-
       <!-- Columna 5: Contact Us -->
-      <div>
+      <div class="flex flex-col max-w-[280px]">
         <h4 class="font-bold text-[15px] mb-6 uppercase tracking-wide text-white">Contact Us</h4>
         
         @if($email)
@@ -130,41 +167,75 @@
     </div>
 
     <!-- Parte Inferior del Footer -->
-    <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-6">
+    <div class="relative border-t border-gray-800 mt-16 pt-8 flex flex-col md:flex-row items-center justify-between gap-6 w-full">
       
-      <!-- Redes Sociales Dinámicas -->
-      <div class="flex gap-4 text-[18px] text-gray-400">
-        @if($socials['tiktok']) <a href="{{ $socials['tiktok'] }}" class="hover:text-white transition-colors">𝕋</a> @endif
-        @if($socials['facebook']) <a href="{{ $socials['facebook'] }}" class="hover:text-white transition-colors">f</a> @endif
-        @if($socials['whatsapp']) <a href="{{ $socials['whatsapp'] }}" class="hover:text-white transition-colors">☎</a> @endif
-        @if($socials['instagram']) <a href="{{ $socials['instagram'] }}" class="hover:text-white transition-colors">◎</a> @endif
+      <!-- REDES SOCIALES: Cápsula centrada con enlaces dinámicos de WordPress -->
+      <div class="absolute left-1/2 -translate-x-1/2 -top-[20px] bg-black border border-gray-600 rounded-full px-6 py-2.5 flex items-center gap-6 text-white z-10">
+        
+        <!-- Facebook -->
+        @if(!empty($socials['facebook']))
+          <a href="{{ $socials['facebook'] }}" target="_blank" rel="noopener noreferrer" class="hover:text-[#db5f15] transition-colors flex items-center">
+            <svg class="w-[16px] h-[16px] fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+              <path d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z"/>
+            </svg>
+          </a>
+        @endif
+
+        <!-- Instagram -->
+        @if(!empty($socials['instagram']))
+          <a href="{{ $socials['instagram'] }}" target="_blank" rel="noopener noreferrer" class="hover:text-[#db5f15] transition-colors flex items-center">
+            <svg class="w-[18px] h-[18px] fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+              <path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/>
+            </svg>
+          </a>
+        @endif
+
+        <!-- TikTok -->
+        @if(!empty($socials['tiktok']))
+          <a href="{{ $socials['tiktok'] }}" target="_blank" rel="noopener noreferrer" class="hover:text-[#db5f15] transition-colors flex items-center">
+            <svg class="w-[16px] h-[16px] fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+              <path d="M544.5 273.9C500.5 274 457.5 260.3 421.7 234.7L421.7 413.4C421.7 446.5 411.6 478.8 392.7 506C373.8 533.2 347.1 554 316.1 565.6C285.1 577.2 251.3 579.1 219.2 570.9C187.1 562.7 158.3 545 136.5 520.1C114.7 495.2 101.2 464.1 97.5 431.2C93.8 398.3 100.4 365.1 116.1 336C131.8 306.9 156.1 283.3 185.7 268.3C215.3 253.3 248.6 247.8 281.4 252.3L281.4 342.2C266.4 337.5 250.3 337.6 235.4 342.6C220.5 347.6 207.5 357.2 198.4 369.9C189.3 382.6 184.4 398 184.5 413.8C184.6 429.6 189.7 444.8 199 457.5C208.3 470.2 221.4 479.6 236.4 484.4C251.4 489.2 267.5 489.2 282.4 484.3C297.3 479.4 310.4 469.9 319.6 457.2C328.8 444.5 333.8 429.1 333.8 413.4L333.8 64L421.8 64C421.7 71.4 422.4 78.9 423.7 86.2C426.8 102.5 433.1 118.1 442.4 131.9C451.7 145.7 463.7 157.5 477.6 166.5C497.5 179.6 520.8 186.6 544.6 186.6L544.6 274z"/>
+            </svg>
+          </a>
+        @endif
+
+        <!-- WhatsApp -->
+        @if(!empty($socials['whatsapp']))
+          <a href="{{ $socials['whatsapp'] }}" target="_blank" rel="noopener noreferrer" class="hover:text-[#db5f15] transition-colors flex items-center">
+            <svg class="w-[18px] h-[18px] fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+              <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zM223.9 413.6c-33.6 0-66.5-9-95.2-26.1l-6.8-4-70.8 18.6 18.9-69-4.4-7c-18.7-29.7-28.6-64-28.6-99.1 0-101.4 82.5-183.9 184-183.9 49.1 0 95.3 19.1 130 53.9 34.7 34.8 53.8 81 53.8 130.2 0 101.4-82.5 183.8-184.2 183.8h-.2c0 0 0 0 0 0zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-2.1-3.6 2.1-3.2 7.3-13.6 1.4-2.8.7-5.1-.4-7-1.1-1.9-12.5-30.2-17.1-41.4-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
+            </svg>
+          </a>
+        @endif
+
       </div>
 
-      <!-- Logo -->
-      <div class="flex-shrink-0">
-        <a href="{{ home_url('/') }}">
-          <img src="{{ get_template_directory_uri() }}/public/images/logo.png" alt="Salkantay Trekking logo" class="h-[50px] w-auto grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+      <!-- LADO IZQUIERDO: Solo el Logo -->
+      <div class="flex items-center gap-8">
+        <!-- Logo -->
+        <a href="{{ home_url('/') }}" class="flex-shrink-0">
+          <img src="{{ get_template_directory_uri() }}/public/images/logo.png" alt="Quechuas Expeditions logo" class="h-[50px] w-auto grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
         </a>
       </div>
 
-      <!-- Copyright dinámico -->
+      <!-- LADO DERECHO: Copyright dinámico y Enlaces Legales (Mismo diseño original) -->
       <div class="flex flex-col xl:flex-row items-center gap-2 xl:gap-8 text-[12px] text-gray-500">
         <span>Copyright © {{ date('Y') }} Quechuas Expeditions</span>
         <div class="flex flex-wrap justify-center gap-x-4 gap-y-2">
-          <a href="#" class="hover:text-[#db5f15] transition-colors">Complaints Book</a>
           <a href="#" class="hover:text-[#db5f15] transition-colors">Terms & Conditions</a>
           <a href="#" class="hover:text-[#db5f15] transition-colors">Privacy Policy</a>
           <a href="#" class="hover:text-[#db5f15] transition-colors">ESNNA Code</a>
         </div>
       </div>
 
-      
+    </div>
 
     </div>
   </div>
   <!-- OVERLAY DEL MODAL (Fondo oscuro) -->
 <div id="modal-enquire" class="fixed inset-0 z-[9999] hidden bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity">
-  <style>
+  
+<style>
   /* 1. Estilo de los títulos (Labels) más suaves */
   #modal-enquire .wpcf7-form label { 
     color: #6b7280 !important; /* Gris suave */
@@ -174,24 +245,72 @@
     margin-bottom: 5px; 
   }
   
-  /* 2. Cajas de texto amigables (Bordes claros, sin sombras duras) */
-  #modal-enquire .wpcf7-form input[type="text"],
+  /* 2. Cajas de texto generales (Bordes claros, sin sombras duras) */
+  /* Excluimos País y Teléfono de esta regla general para no dañar sus banderas */
+  #modal-enquire .wpcf7-form input[type="text"]:not(.wpcf7-countrytext):not(.wpcf7-phonetext),
   #modal-enquire .wpcf7-form input[type="email"],
-  #modal-enquire .wpcf7-form input[type="tel"],
+  #modal-enquire .wpcf7-form input[type="tel"]:not(.wpcf7-phonetext),
   #modal-enquire .wpcf7-form input[type="number"],
   #modal-enquire .wpcf7-form input[type="date"],
   #modal-enquire .wpcf7-form select,
   #modal-enquire .wpcf7-form textarea {
     width: 100%;
-    border: 1px solid #e5e7eb !important; /* Borde gris súper clarito */
+    border: 1px solid #e5e7eb !important; 
     border-radius: 3px !important;
     padding: 10px 14px !important;
     background-color: #ffffff !important;
     color: #374151 !important;
     outline: none !important;
-    box-shadow: none !important; /* Mata cualquier sombra negra por defecto */
+    box-shadow: none !important; 
     font-size: 14px !important;
     transition: all 0.3s ease !important;
+  }
+
+  /* 2.1 Obligar al contenedor del teléfono del plugin a ocupar todo el ancho */
+  #modal-enquire .wpcf7-form .iti, 
+  #modal-enquire .wpcf7-form .iti--allow-dropdown {
+      width: 100% !important;
+      display: block !important;
+  }
+
+  /* 2.2 Diseño ESPECÍFICO para País (Espacio exacto de 45px para la bandera) */
+  #modal-enquire .wpcf7-form .wpcf7-countrytext {
+      width: 100% !important;
+      border: 1px solid #e5e7eb !important;
+      border-radius: 3px !important;
+      /* Orden del padding: Arriba | Derecha | Abajo | Izquierda */
+      padding: 10px 14px 10px 45px !important; 
+      background-color: #ffffff !important;
+      color: #374151 !important;
+      outline: none !important;
+      box-shadow: none !important;
+      font-size: 14px !important;
+      height: 42px !important;
+      transition: all 0.3s ease !important;
+  }
+
+  /* 2.3 Diseño ESPECÍFICO para Teléfono (Espacio exacto de 95px para bandera + código) */
+  #modal-enquire .wpcf7-form .wpcf7-phonetext {
+      width: 100% !important;
+      border: 1px solid #e5e7eb !important;
+      border-radius: 3px !important;
+      /* Orden del padding: Arriba | Derecha | Abajo | Izquierda */
+      padding: 10px 14px 10px 95px !important; 
+      background-color: #ffffff !important;
+      color: #374151 !important;
+      outline: none !important;
+      box-shadow: none !important;
+      font-size: 14px !important;
+      height: 42px !important;
+      transition: all 0.3s ease !important;
+  }
+
+  /* 2.4 Recrear la caja gris y línea separadora de tu imagen de referencia */
+  #modal-enquire .wpcf7-form .iti--separate-dial-code .iti__flag-container {
+      border-right: 1px solid #e5e7eb !important;
+      background-color: #f9fafb !important;
+      border-top-left-radius: 3px !important;
+      border-bottom-left-radius: 3px !important;
   }
   
   /* 3. Efecto Focus (Cuando haces clic para escribir se pone naranja) */
