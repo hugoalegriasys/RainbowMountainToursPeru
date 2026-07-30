@@ -149,9 +149,30 @@
       </ul>
     </li>
 
-    <!-- 2. TRAVEL GUIDE (Enlace simple) -->
+    <!-- 2. TRAVEL GUIDE / GUÍA DE VIAJE - ENLACE NATIVO POLYLANG -->
     <li>
-      <a href="{{ home_url(function_exists('pll_current_language') && pll_current_language() == 'es' ? '/es/guia-montana-colores/' : '/rainbow-mountain-guide/') }}" class="text-white text-[13.5px] uppercase tracking-[1px] hover:text-[#db5f15] transition-colors whitespace-nowrap font-medium py-2">
+      @php
+          // 1. Buscamos la página de la guía en inglés sin importar su ID exacto
+          $guide_page = get_page_by_path('rainbow-mountain-guide');
+          $guide_url = '#';
+
+          if ($guide_page) {
+              $guide_id = $guide_page->ID;
+
+              // 2. Si Polylang está activo, obtenemos la página vinculada al idioma actual automáticamente
+              if (function_exists('pll_get_post')) {
+                  $translated_id = pll_get_post($guide_id);
+                  if ($translated_id) {
+                      $guide_id = $translated_id;
+                  }
+              }
+
+              // 3. Generamos el enlace definitivo
+              $guide_url = get_permalink($guide_id);
+          }
+      @endphp
+
+      <a href="{{ $guide_url }}" class="text-white text-[13.5px] uppercase tracking-[1px] hover:text-[#db5f15] transition-colors whitespace-nowrap font-medium py-2">
         @if(function_exists('pll_current_language') && pll_current_language() == 'es')
           Guía de Viaje
         @else

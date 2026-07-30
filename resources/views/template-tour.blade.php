@@ -675,10 +675,10 @@
   </aside>
 
 </div> <!-- ESTE DIV CIERRA EL CONTENEDOR PRINCIPAL (GRID) -->
-
+</div>
 <!-- 👉 ¡AQUÍ EXACTAMENTE PEGAS EL INCLUDE! 👈 -->
 <!-- ZONA DONDE LA BARRA DEBE DESAPARECER -->
-<div id="zona-ocultar-barra">
+<div id="zona-ocultar-barra" style="position: relative; z-index: 1000; background-color: #ffffff;">
   @include('sections.faq')
   @include('sections.tours')
   @include('sections.destinations')
@@ -964,6 +964,47 @@
       console.error("Error en el sistema de pestañas:", error);
     }
   });
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const tabs = document.querySelectorAll('.tour-tab');
+    const panes = document.querySelectorAll('.tab-pane');
+    
+    // 🔴 El cambio clave: Tomamos como referencia el contenedor de la información, que SIEMPRE está fijo en su lugar.
+    const contentContainer = document.querySelector('.tour-page-grid');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function(e) {
+            e.preventDefault(); 
+
+            // 1. CAMBIO DE PESTAÑAS (Mostrar/Ocultar)
+            const targetId = this.getAttribute('data-target');
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            panes.forEach(p => p.style.display = 'none');
+            
+            this.classList.add('active');
+            document.getElementById(targetId).style.display = 'block';
+
+            // 2. SCROLL PERFECTO HACIA ARRIBA
+            // Si el usuario ya bajó de la zona de inicio, lo regresamos.
+            if (contentContainer) {
+                // Obtenemos la posición real del contenedor en el documento
+                const elementTop = contentContainer.getBoundingClientRect().top + window.scrollY;
+                
+                // Le restamos 140px para compensar la altura de tu menú superior (header) y la propia barra sticky.
+                // Si ves que queda muy arriba o muy abajo, cambia este "140" por 100 o 180.
+                const offsetPosition = elementTop - 140; 
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: "smooth"
+                });
+            }
+        });
+    });
+});
 </script>
 
 @endsection <!-- AQUÍ TERMINA TU ARCHIVO BLADE -->

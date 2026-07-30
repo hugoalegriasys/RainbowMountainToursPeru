@@ -42,19 +42,13 @@
     @endif
 
     <!-- Botones -->
-    <div class="flex flex-wrap items-center justify-center gap-4 mt-6">
-      @if($texto_boton1)
-        <a href="javascript:void(0);" onclick="document.getElementById('modal-enquire').classList.remove('hidden')" class="bg-[#db5f15] text-white font-bold text-[13px] sm:text-[14px] uppercase tracking-[1px] px-8 py-4 inline-flex items-center justify-center whitespace-nowrap transition-colors duration-200 hover:bg-[#c25411] rounded-sm shadow-lg">
-          {{ $texto_boton1 }}
-        </a>
-      @endif
-      
-      @if($texto_boton2)
-        <a href="#" class="bg-black/40 backdrop-blur-sm border border-white text-white font-bold text-[13px] sm:text-[14px] uppercase tracking-[1px] px-8 py-4 inline-flex items-center justify-center whitespace-nowrap transition-all duration-200 hover:bg-white hover:text-black rounded-sm shadow-lg">
-         {{ $texto_boton2 }}
-        </a>
-      @endif
-    </div>
+<div class="flex flex-wrap items-center justify-center gap-4 mt-6">
+  @if($texto_boton1)
+    <a href="javascript:void(0);" onclick="document.getElementById('modal-enquire').classList.remove('hidden')" class="bg-[#db5f15] text-white font-bold text-[13px] sm:text-[14px] uppercase tracking-[1px] px-8 py-4 inline-flex items-center justify-center whitespace-nowrap transition-colors duration-200 hover:bg-[#c25411] rounded-sm shadow-lg">
+      {{ $texto_boton1 }}
+    </a>
+  @endif
+</div>
 
   </div>
 </section>

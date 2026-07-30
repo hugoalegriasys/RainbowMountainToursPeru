@@ -386,7 +386,7 @@
       <!-- LÓGICA DE IDIOMAS PARA EL SHORTCODE -->
       @if(function_exists('pll_current_language') && pll_current_language() == 'es')
         <!-- Aquí irá el ID de tu formulario cuando lo crees en español -->
-        {!! do_shortcode('[contact-form-7 id="TU_ID_ESPANOL" title="Consultar Ahora"]') !!}
+        {!! do_shortcode('[contact-form-7 id="ec79ba0" title="Modal Enquire - Español"]') !!}
       @else
         <!-- Reemplaza el "123" por el ID real que copiaste en el Paso 2 -->
         {!! do_shortcode('[contact-form-7 id="353" title="Enquire Now - English"]') !!}
