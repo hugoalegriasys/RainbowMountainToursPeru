@@ -1,42 +1,53 @@
-<p align="center">
-  <a href="https://roots.io/sage/"><img alt="Sage" src="https://cdn.roots.io/app/uploads/logo-sage.svg" height="100"></a>
-</p>
+# mi-tema
 
-<p align="center">
-  <a href="https://packagist.org/packages/roots/sage"><img alt="Packagist Installs" src="https://img.shields.io/packagist/dt/roots/sage?label=projects%20created&colorB=2b3072&colorA=525ddc&style=flat-square"></a>
-  <a href="https://github.com/roots/sage/actions/workflows/main.yml"><img alt="Build Status" src="https://img.shields.io/github/actions/workflow/status/roots/sage/main.yml?branch=main&logo=github&label=CI&style=flat-square"></a>
-  <a href="https://twitter.com/rootswp"><img alt="Follow Roots" src="https://img.shields.io/badge/follow%20@rootswp-1da1f2?logo=twitter&logoColor=ffffff&message=&style=flat-square"></a>
-  <a href="https://github.com/sponsors/roots"><img src="https://img.shields.io/badge/sponsor%20roots-525ddc?logo=github&style=flat-square&logoColor=ffffff&message=" alt="Sponsor Roots"></a>
-</p>
+Tema de WordPress para un sitio de viajes, construido sobre [Sage](https://roots.io/sage/) 11 con Laravel Blade, Tailwind CSS y Vite.
 
-# Sage
+## Características
 
-**Advanced hybrid WordPress starter theme with Laravel Blade and Tailwind CSS**
+- Plantillas Blade con herencia de layouts y secciones reutilizables.
+- Estilos con Tailwind CSS (v4) y flujo de desarrollo con Vite (hot-reload y build).
+- Alpine.js para interactividad ligera en el front-end.
+- Integración con ACF (Advanced Custom Fields) para el contenido editable de cada página.
+- Contact Form 7 en el formulario de contacto.
+- Polylang para versiones ES/EN en títulos, subtítulos y textos fijos.
+- Widget de reservas con calendario dinámico y botón de WhatsApp en la plantilla de tour.
 
-- 🔧 Clean, efficient theme templating with Laravel Blade
-- ⚡️ Modern front-end development workflow powered by Vite
-- 🎨 Out of the box support for Tailwind CSS
-- 🚀 Harness the power of Laravel with [Acorn integration](https://github.com/roots/acorn)
-- 📦 Block editor support built-in
+## Plantillas
 
-Sage brings proper PHP templating and modern JavaScript tooling to WordPress themes. Write organized, component-based code using Laravel Blade, enjoy instant builds and CSS hot-reloading with Vite, and leverage Laravel's robust feature set through Acorn.
+| Plantilla | Archivo | Uso |
+|---|---|---|
+| About Us | `resources/views/template-about.blade.php` | Página de presentación: misión, visión, compromiso, premios y destinos. |
+| Contact Us | `resources/views/template-contact.blade.php` | Tarjetas de contacto, formulario CF7, mapa y FAQ. |
+| Plantilla Tour | `resources/views/template-tour.blade.php` | Ficha de tour: héroe, facts bar, galería, itinerario, pestañas y reserva. |
+| Travel Guide | `resources/views/template-rainbow-guide.blade.php` | Guía de la Montaña de Colores con secciones bilingües. |
+| Custom | `resources/views/template-custom.blade.php` | Plantilla base personalizada. |
 
-[Read the docs to get started](https://roots.io/sage/docs/installation/)
+## Estructura
 
-## Support us
+```
+app/                 Lógica PHP (Composers, filters, setup).
+resources/views/     Vistas Blade.
+  layouts/           Layout base.
+  partials/          Componentes reutilizables.
+  sections/          Secciones (header, hero, stats, tours, footer…).
+resources/css/       Estilos Tailwind / CSS.
+resources/js/        Scripts de entrada (app, editor).
+public/build/        Build de producción (generado).
+```
 
-Roots is an independent open source org, supported only by developers like you. Your sponsorship funds [WP Packages](https://wp-packages.org/) and the entire Roots ecosystem, and keeps them independent. Support us by purchasing [Radicle](https://roots.io/radicle/) or [sponsoring us on GitHub](https://github.com/sponsors/roots) — sponsors get access to our private Discord.
+## Desarrollo
 
-### Sponsors
+```bash
+npm install
+npm run dev      # desarrollo con hot-reload
+npm run build    # build de producción
+```
 
-<a href="https://carrot.com/"><img src="https://cdn.roots.io/app/uploads/carrot.svg" alt="Carrot" width="120" height="90"></a> <a href="https://wordpress.com/"><img src="https://cdn.roots.io/app/uploads/wordpress.svg" alt="WordPress.com" width="120" height="90"></a> <a href="https://www.itineris.co.uk/"><img src="https://cdn.roots.io/app/uploads/itineris.svg" alt="Itineris" width="120" height="90"></a> <a href="https://kinsta.com/?kaid=OFDHAJIXUDIV"><img src="https://cdn.roots.io/app/uploads/kinsta.svg" alt="Kinsta" width="120" height="90"></a> <a href="https://40q.agency/"><img src="https://cdn.roots.io/app/uploads/40q.svg" alt="40Q" width="120" height="90"></a>
+Requisitos: PHP 8.2+, WordPress 6.6+ y [Acorn](https://github.com/roots/acorn) instalado vía Composer.
 
-## Community
+## Ajustes aplicados
 
-Keep track of development and community news.
-
-- Join us on Discord by [sponsoring us on GitHub](https://github.com/sponsors/roots)
-- Join us on [Roots Discourse](https://discourse.roots.io/)
-- Follow [@rootswp on Twitter](https://twitter.com/rootswp)
-- Follow the [Roots Blog](https://roots.io/blog/)
-- Subscribe to the [Roots Newsletter](https://roots.io/subscribe/)
+- **Heredoc**: sin sintaxis heredoc (`<<<`) en vistas ni en `app/`; se usa interpolación Blade.
+- **Comentarios Blade**: los comentarios internos usan `{{-- --}}` (no se renderizan al navegador); se eliminaron comentarios numerados, instructivos y de prueba.
+- **Indentación**: normalizada según `.editorconfig` (2 espacios en Blade, 4 en PHP, LF, UTF-8 sin BOM), incluidos el índice y los bloques tipográficos.
+- **README**: se reemplazó el README por defecto de Sage por esta documentación y se añadió `README.txt` en formato del repositorio de temas de WordPress.

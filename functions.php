@@ -63,34 +63,29 @@ collect(['setup', 'filters'])
 add_filter( 'wpcf7_form_tag', 'dinamizar_lista_de_tours', 10, 2 );
 
 function dinamizar_lista_de_tours( $tag, $replace ) {
-    // 1. Solo afectamos al campo que se llama "interest"
     if ( $tag['name'] !== 'interest' ) {
         return $tag;
     }
 
-    // 2. Consultamos las Páginas que son "hijas" de Destinations
     $args = array(
-        'post_type'      => 'page', // Son páginas normales
-        'post_parent'    => 377,    // <--- REEMPLAZA EL 123 POR EL ID DE "DESTINATIONS"
+        'post_type'      => 'page',
+        'post_parent'    => 377,
         'posts_per_page' => -1,
         'post_status'    => 'publish',
         'orderby'        => 'title',
         'order'          => 'ASC'
     );
-    
+
     $tours = get_posts( $args );
 
-    // Si no hay tours hijos, devolvemos el campo intacto
     if ( ! $tours ) {
         return $tag;
     }
 
-    // 3. Reiniciamos la lista dejando solo la opción por defecto
     $tag['raw_values'] = array('Select Your Tour');
     $tag['values']     = array('Select Your Tour');
     $tag['labels']     = array('Select Your Tour');
 
-    // 4. Llenamos el desplegable automáticamente
     foreach ( $tours as $tour ) {
         $tag['raw_values'][] = $tour->post_title;
         $tag['values'][]     = $tour->post_title;

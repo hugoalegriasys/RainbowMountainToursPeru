@@ -24,7 +24,6 @@
 <section class="bg-[#f8f8f8] py-14 px-6 border-y border-[#eaeaea]">
   <div class="max-w-[1200px] mx-auto">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-      
       @foreach($stats as $stat)
         <div class="flex flex-col items-center justify-center">
           <span class="text-[36px] sm:text-[44px] font-bold text-[#db6923] leading-none mb-2">
@@ -35,7 +34,6 @@
           </span>
         </div>
       @endforeach
-
     </div>
   </div>
 </section>

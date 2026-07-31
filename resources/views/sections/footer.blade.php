@@ -1,137 +1,125 @@
 @php
-  // Aseguramos que siempre busque en la página de Inicio
   $home_id = get_option('page_on_front');
 
-  // Textos de Contacto y Horarios
   $address  = get_field('footer_address', $home_id);
   $email    = get_field('footer_email', $home_id);
   $phone    = get_field('footer_phone', $home_id);
   $btn_text = get_field('footer_btn_text', $home_id);
   $btn_url  = get_field('footer_btn_url', $home_id) ?: '#';
-  // Horarios de ventas (Un solo campo WYSIWYG)
   $sales_hours = get_field('footer_sales_hours', $home_id);
 
-  // Redes Sociales
   $socials = [
-      'tiktok'    => get_field('footer_tiktok', $home_id),
-      'facebook'  => get_field('footer_facebook', $home_id),
-      'whatsapp'  => get_field('footer_whatsapp', $home_id),
-      'instagram' => get_field('footer_instagram', $home_id),
+    'tiktok'    => get_field('footer_tiktok', $home_id),
+    'facebook'  => get_field('footer_facebook', $home_id),
+    'whatsapp'  => get_field('footer_whatsapp', $home_id),
+    'instagram' => get_field('footer_instagram', $home_id),
   ];
 
-  // Bucle DINÁMICO para Destinations
-  // Se ejecutará infinitamente mientras encuentre un campo 'dest_X_text'
+  // Se ejecutará mientras encuentre un campo 'dest_X_text'
   $destinations = [];
   $d = 1;
   while (get_field("dest_{$d}_text", $home_id)) {
-      $destinations[] = [
-          'text' => get_field("dest_{$d}_text", $home_id),
-          'url'  => get_field("dest_{$d}_url", $home_id) ?: '#'
-      ];
-      $d++;
+    $destinations[] = [
+      'text' => get_field("dest_{$d}_text", $home_id),
+      'url'  => get_field("dest_{$d}_url", $home_id) ?: '#',
+    ];
+    $d++;
   }
 
-  // Bucle DINÁMICO para Useful Information
-  // Se ejecutará infinitamente mientras encuentre un campo 'info_X_text'
+  // Se ejecutará mientras encuentre un campo 'info_X_text'
   $useful_info = [];
   $u = 1;
   while (get_field("info_{$u}_text", $home_id)) {
-      $useful_info[] = [
-          'text' => get_field("info_{$u}_text", $home_id),
-          'url'  => get_field("info_{$u}_url", $home_id) ?: '#'
-      ];
-      $u++;
+    $useful_info[] = [
+      'text' => get_field("info_{$u}_text", $home_id),
+      'url'  => get_field("info_{$u}_url", $home_id) ?: '#',
+    ];
+    $u++;
   }
 @endphp
 
 <footer class="bg-black text-white pt-16 pb-8 px-6 mt-auto">
   <div class="max-w-[1300px] mx-auto">
-    
-    <!-- Cambiamos a Flexbox para un centrado absoluto -->
     <div class="flex flex-col lg:flex-row lg:justify-center lg:gap-16 xl:gap-24 w-full">
-      
-<!-- COLUMNA 1: DESTINATIONS -->
-<div class="flex flex-col">
-    <h3 class="text-white text-sm font-bold tracking-wider uppercase mb-6">
-        @if(function_exists('pll_current_language') && pll_current_language() == 'es')
+      <!-- COLUMNA 1: DESTINATIONS -->
+      <div class="flex flex-col">
+        <h3 class="text-white text-sm font-bold tracking-wider uppercase mb-6">
+          @if(function_exists('pll_current_language') && pll_current_language() == 'es')
             Destinos
-        @else
+          @else
             Destinations
-        @endif
-    </h3>
-    
-    <ul class="flex flex-col space-y-3 text-gray-400 text-[14.5px]">
-        @php
-            // Tu ID base
-            $parent_base_id = 377; // <-- Recuerda poner tu ID aquí
-            
+          @endif
+        </h3>
+
+        <ul class="flex flex-col space-y-3 text-gray-400 text-[14.5px]">
+          @php
+            $parent_base_id = 377;
+
             $parent_id = $parent_base_id;
             if (function_exists('pll_get_post')) {
-                $translated_id = pll_get_post($parent_base_id);
-                $parent_id = $translated_id ? $translated_id : -1; 
+              $translated_id = pll_get_post($parent_base_id);
+              $parent_id = $translated_id ? $translated_id : -1;
             }
 
             $args = [
-                'post_type'      => 'page', 
-                'post_parent'    => $parent_id, 
-                'posts_per_page' => 6,
-                'orderby'        => 'menu_order',
-                'order'          => 'ASC',
-                'post_status'    => 'publish',
+              'post_type'      => 'page',
+              'post_parent'    => $parent_id,
+              'posts_per_page' => 6,
+              'orderby'        => 'menu_order',
+              'order'          => 'ASC',
+              'post_status'    => 'publish',
             ];
             $tours_query = new WP_Query($args);
-        @endphp
+          @endphp
 
-        @if($tours_query->have_posts())
+          @if($tours_query->have_posts())
             @while($tours_query->have_posts()) @php $tours_query->the_post() @endphp
-                <li>
-                    <a href="{{ get_permalink() }}" class="hover:text-[#db5f15] transition-colors duration-300 whitespace-nowrap">
-                        {!! get_the_title() !!}
-                    </a>
-                </li>
+              <li>
+                <a href="{{ get_permalink() }}" class="hover:text-[#db5f15] transition-colors duration-300 whitespace-nowrap">
+                  {!! get_the_title() !!}
+                </a>
+              </li>
             @endwhile
             @php wp_reset_postdata() @endphp
-        @else
+          @else
             <li><span class="text-gray-500">No destinations found.</span></li>
-        @endif
-    </ul>
-</div>
+          @endif
+        </ul>
+      </div>
 
-<!-- COLUMNA 2: USEFUL INFORMATION -->
-<div class="flex flex-col lg:col-span-2">
-    <h3 class="text-white text-sm font-bold tracking-wider uppercase mb-6 whitespace-nowrap">Useful Information</h3>
-    <ul class="flex flex-col space-y-3 text-gray-400 text-[14.5px]">
-        <li><a href="{{ home_url('/about-us/') }}" class="hover:text-[#db5f15] transition-colors duration-300">About Us</a></li>
-        <li><a href="{{ home_url('/rainbow-mountain-guide/') }}" class="hover:text-[#db5f15] transition-colors duration-300">Travel Guide</a></li>
-        <li><a href="{{ home_url('/faqs/') }}" class="hover:text-[#db5f15] transition-colors duration-300">FAQ's</a></li>
-        <li><a href="{{ home_url('/contact-us/') }}" class="hover:text-[#db5f15] transition-colors duration-300">Contact Us</a></li>
-        <li><a href="{{ home_url('/blog/') }}" class="hover:text-[#db5f15] transition-colors duration-300">Blog</a></li>
-    </ul>
-</div>
+      <!-- COLUMNA 2: USEFUL INFORMATION -->
+      <div class="flex flex-col lg:col-span-2">
+        <h3 class="text-white text-sm font-bold tracking-wider uppercase mb-6 whitespace-nowrap">Useful Information</h3>
+        <ul class="flex flex-col space-y-3 text-gray-400 text-[14.5px]">
+          <li><a href="{{ home_url('/about-us/') }}" class="hover:text-[#db5f15] transition-colors duration-300">About Us</a></li>
+          <li><a href="{{ home_url('/rainbow-mountain-guide/') }}" class="hover:text-[#db5f15] transition-colors duration-300">Travel Guide</a></li>
+          <li><a href="{{ home_url('/faqs/') }}" class="hover:text-[#db5f15] transition-colors duration-300">FAQ's</a></li>
+          <li><a href="{{ home_url('/contact-us/') }}" class="hover:text-[#db5f15] transition-colors duration-300">Contact Us</a></li>
+          <li><a href="{{ home_url('/blog/') }}" class="hover:text-[#db5f15] transition-colors duration-300">Blog</a></li>
+        </ul>
+      </div>
 
       <!-- Columna 3: Office Hours -->
       <div class="flex flex-col max-w-[280px]">
         <h4 class="font-bold text-[15px] mb-6 uppercase tracking-wide text-white">Office Hours (PET)</h4>
-        
+
         @if($address)
           <p class="text-gray-400 leading-relaxed mb-5">{{ $address }}</p>
         @endif
 
         @if($sales_hours)
           <span class="block mb-4 font-semibold text-white">Sales Team Hours</span>
-          
+
           <div class="flex items-start gap-3 text-gray-400">
-            <!-- Icono del relojito alineado a la izquierda -->
-<span class="mt-1 text-white">
-  <svg xmlns="http://www.w3.org/2000/svg"
-       width="20"
-       height="20"
-       fill="currentColor"
-       viewBox="0 0 256 256">
-    <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm64-88a8,8,0,0,1-8,8H128a8,8,0,0,1-8-8V72a8,8,0,0,1,16,0v48h48A8,8,0,0,1,192,128Z"/>
-  </svg>
-</span>
-            <!-- Contenedor del Editor Visual -->
+            <span class="mt-1 text-white">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   width="20"
+                   height="20"
+                   fill="currentColor"
+                   viewBox="0 0 256 256">
+                <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm64-88a8,8,0,0,1-8,8H128a8,8,0,0,1-8-8V72a8,8,0,0,1,16,0v48h48A8,8,0,0,1,192,128Z"/>
+              </svg>
+            </span>
             <div class="text-[13.3px] leading-relaxed flex flex-col gap-2 [&>p>strong]:text-white [&>p>strong]:font-medium [&>p>strong]:block [&>p]:mb-3 last:[&>p]:mb-0">
               {!! $sales_hours !!}
             </div>
@@ -142,7 +130,7 @@
       <!-- Columna 5: Contact Us -->
       <div class="flex flex-col max-w-[280px]">
         <h4 class="font-bold text-[15px] mb-6 uppercase tracking-wide text-white">Contact Us</h4>
-        
+
         @if($email)
           <a href="mailto:{{ $email }}" class="block text-[#db5f15] hover:text-white transition-colors mb-4 text-[14px]">
             {{ $email }}
@@ -154,9 +142,9 @@
             <span class="text-[16px]"></span> {{ $phone }}
           </div>
         @endif
-        
+
         <div class="border-t border-dashed border-gray-700 my-6"></div>
-        
+
         @if($btn_text)
           <a href="javascript:void(0);" onclick="document.getElementById('modal-enquire').classList.remove('hidden')" class="inline-block bg-[#db5f15] hover:bg-[#c25411] text-white font-bold text-[13px] py-3 px-6 rounded transition-colors uppercase tracking-wide text-center">
             {{ $btn_text }}
@@ -168,10 +156,10 @@
 
     <!-- Parte Inferior del Footer -->
     <div class="relative border-t border-gray-800 mt-16 pt-8 flex flex-col md:flex-row items-center justify-between gap-6 w-full">
-      
+
       <!-- REDES SOCIALES: Cápsula centrada con enlaces dinámicos de WordPress -->
       <div class="absolute left-1/2 -translate-x-1/2 -top-[20px] bg-black border border-gray-600 rounded-full px-6 py-2.5 flex items-center gap-6 text-white z-10">
-        
+
         <!-- Facebook -->
         @if(!empty($socials['facebook']))
           <a href="{{ $socials['facebook'] }}" target="_blank" rel="noopener noreferrer" class="hover:text-[#db5f15] transition-colors flex items-center">
@@ -212,13 +200,12 @@
 
       <!-- LADO IZQUIERDO: Solo el Logo -->
       <div class="flex items-center gap-8">
-        <!-- Logo -->
         <a href="{{ home_url('/') }}" class="flex-shrink-0">
           <img src="{{ get_template_directory_uri() }}/public/images/logo.png" alt="Quechuas Expeditions logo" class="h-[50px] w-auto grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
         </a>
       </div>
 
-      <!-- LADO DERECHO: Copyright dinámico y Enlaces Legales (Mismo diseño original) -->
+      <!-- LADO DERECHO: Copyright dinámico y Enlaces Legales -->
       <div class="flex flex-col xl:flex-row items-center gap-2 xl:gap-8 text-[12px] text-gray-500">
         <span>Copyright © {{ date('Y') }} Quechuas Expeditions</span>
         <div class="flex flex-wrap justify-center gap-x-4 gap-y-2">
@@ -229,23 +216,20 @@
       </div>
 
     </div>
-
     </div>
   </div>
   <!-- OVERLAY DEL MODAL (Fondo oscuro) -->
 <div id="modal-enquire" class="fixed inset-0 z-[9999] hidden bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity">
-  
+
 <style>
-  /* 1. Estilo de los títulos (Labels) más suaves */
-  #modal-enquire .wpcf7-form label { 
-    color: #6b7280 !important; /* Gris suave */
+  #modal-enquire .wpcf7-form label {
+    color: #6b7280 !important;
     font-weight: 400 !important;
     font-size: 13.5px !important;
-    display: block; 
-    margin-bottom: 5px; 
+    display: block;
+    margin-bottom: 5px;
   }
-  
-  /* 2. Cajas de texto generales (Bordes claros, sin sombras duras) */
+
   /* Excluimos País y Teléfono de esta regla general para no dañar sus banderas */
   #modal-enquire .wpcf7-form input[type="text"]:not(.wpcf7-countrytext):not(.wpcf7-phonetext),
   #modal-enquire .wpcf7-form input[type="email"],
@@ -255,73 +239,67 @@
   #modal-enquire .wpcf7-form select,
   #modal-enquire .wpcf7-form textarea {
     width: 100%;
-    border: 1px solid #e5e7eb !important; 
+    border: 1px solid #e5e7eb !important;
     border-radius: 3px !important;
     padding: 10px 14px !important;
     background-color: #ffffff !important;
     color: #374151 !important;
     outline: none !important;
-    box-shadow: none !important; 
+    box-shadow: none !important;
     font-size: 14px !important;
     transition: all 0.3s ease !important;
   }
 
-  /* 2.1 Obligar al contenedor del teléfono del plugin a ocupar todo el ancho */
-  #modal-enquire .wpcf7-form .iti, 
+  #modal-enquire .wpcf7-form .iti,
   #modal-enquire .wpcf7-form .iti--allow-dropdown {
-      width: 100% !important;
-      display: block !important;
+    width: 100% !important;
+    display: block !important;
   }
 
-  /* 2.2 Diseño ESPECÍFICO para País (Espacio exacto de 45px para la bandera) */
   #modal-enquire .wpcf7-form .wpcf7-countrytext {
-      width: 100% !important;
-      border: 1px solid #e5e7eb !important;
-      border-radius: 3px !important;
-      /* Orden del padding: Arriba | Derecha | Abajo | Izquierda */
-      padding: 10px 14px 10px 45px !important; 
-      background-color: #ffffff !important;
-      color: #374151 !important;
-      outline: none !important;
-      box-shadow: none !important;
-      font-size: 14px !important;
-      height: 42px !important;
-      transition: all 0.3s ease !important;
+    width: 100% !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 3px !important;
+    /* Orden del padding: Arriba | Derecha | Abajo | Izquierda */
+    padding: 10px 14px 10px 45px !important;
+    background-color: #ffffff !important;
+    color: #374151 !important;
+    outline: none !important;
+    box-shadow: none !important;
+    font-size: 14px !important;
+    height: 42px !important;
+    transition: all 0.3s ease !important;
   }
 
-  /* 2.3 Diseño ESPECÍFICO para Teléfono (Espacio exacto de 95px para bandera + código) */
   #modal-enquire .wpcf7-form .wpcf7-phonetext {
-      width: 100% !important;
-      border: 1px solid #e5e7eb !important;
-      border-radius: 3px !important;
-      /* Orden del padding: Arriba | Derecha | Abajo | Izquierda */
-      padding: 10px 14px 10px 95px !important; 
-      background-color: #ffffff !important;
-      color: #374151 !important;
-      outline: none !important;
-      box-shadow: none !important;
-      font-size: 14px !important;
-      height: 42px !important;
-      transition: all 0.3s ease !important;
+    width: 100% !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 3px !important;
+    /* Orden del padding: Arriba | Derecha | Abajo | Izquierda */
+    padding: 10px 14px 10px 95px !important;
+    background-color: #ffffff !important;
+    color: #374151 !important;
+    outline: none !important;
+    box-shadow: none !important;
+    font-size: 14px !important;
+    height: 42px !important;
+    transition: all 0.3s ease !important;
   }
 
-  /* 2.4 Recrear la caja gris y línea separadora de tu imagen de referencia */
   #modal-enquire .wpcf7-form .iti--separate-dial-code .iti__flag-container {
-      border-right: 1px solid #e5e7eb !important;
-      background-color: #f9fafb !important;
-      border-top-left-radius: 3px !important;
-      border-bottom-left-radius: 3px !important;
+    border-right: 1px solid #e5e7eb !important;
+    background-color: #f9fafb !important;
+    border-top-left-radius: 3px !important;
+    border-bottom-left-radius: 3px !important;
   }
-  
-  /* 3. Efecto Focus (Cuando haces clic para escribir se pone naranja) */
-  #modal-enquire .wpcf7-form input:focus, 
-  #modal-enquire .wpcf7-form select:focus, 
+
+  #modal-enquire .wpcf7-form input:focus,
+  #modal-enquire .wpcf7-form select:focus,
   #modal-enquire .wpcf7-form textarea:focus {
     border-color: #db5f15 !important;
-    box-shadow: 0 0 0 1px #db5f15 !important; 
+    box-shadow: 0 0 0 1px #db5f15 !important;
   }
-  
-  /* 4. Botón de envío idéntico al de tu ejemplo */
+
   #modal-enquire .wpcf7-form input[type="submit"] {
     background-color: #db5f15 !important;
     color: white !important;
@@ -334,12 +312,11 @@
     margin-top: 15px !important;
     font-size: 15px !important;
   }
-  
+
   #modal-enquire .wpcf7-form input[type="submit"]:hover {
     background-color: #c25411 !important;
   }
 
-  /* 5. Mensajes de error más sutiles */
   #modal-enquire .wpcf7-not-valid-tip {
     color: #ef4444 !important;
     font-size: 12px !important;
@@ -351,10 +328,10 @@
     margin-top: 15px !important;
   }
 </style>
-  
+
   <!-- CAJA DEL MODAL -->
   <div class="bg-white rounded-lg shadow-2xl w-full max-w-5xl flex flex-col md:flex-row overflow-hidden relative max-h-[95vh]">
-    
+
     <!-- Botón Cerrar (X) -->
     <button onclick="document.getElementById('modal-enquire').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-[#db5f15] z-50 transition-colors">
       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -363,12 +340,10 @@
     </button>
 
     <!-- COLUMNA IZQUIERDA (Imagen y Texto) -->
-    <!-- Cambia la URL por tu imagen real -->
     <div class="hidden md:flex md:w-5/12 bg-cover bg-center relative p-10 flex-col justify-center items-center text-center" style="background-image: url('{{ get_template_directory_uri() }}/public/images/bg-modal.jpg');">
       <div class="absolute inset-0 bg-black/50"></div>
-      
+
       <div class="relative z-10 text-white">
-        <!-- Puedes poner un icono o logo tipo Award aquí -->
         <h3 class="text-3xl font-light text-white mb-2">
           Contact Us <span class="text-[#db5f15] font-bold block">Easily!</span>
         </h3>
@@ -382,16 +357,14 @@
     <!-- COLUMNA DERECHA (Formulario) -->
     <div class="w-full md:w-7/12 p-8 md:p-10 overflow-y-auto custom-scrollbar text-gray-800 bg-white">
       <h2 class="text-2xl text-[#db5f15] font-light mb-6">Enquire Now</h2>
-      
+
       <!-- LÓGICA DE IDIOMAS PARA EL SHORTCODE -->
       @if(function_exists('pll_current_language') && pll_current_language() == 'es')
-        <!-- Aquí irá el ID de tu formulario cuando lo crees en español -->
         {!! do_shortcode('[contact-form-7 id="ec79ba0" title="Modal Enquire - Español"]') !!}
       @else
-        <!-- Reemplaza el "123" por el ID real que copiaste en el Paso 2 -->
         {!! do_shortcode('[contact-form-7 id="353" title="Enquire Now - English"]') !!}
       @endif
-      
+
     </div>
   </div>
 </div>

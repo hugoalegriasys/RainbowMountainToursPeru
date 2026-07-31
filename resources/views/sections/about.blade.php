@@ -1,24 +1,19 @@
 @php
-  // Obtenemos el ID de la página de inicio
   $home_id = get_option('page_on_front');
 
-  // Textos Generales
   $about_titulo    = get_field('about_titulo', $home_id);
   $about_parrafo_1 = get_field('about_parrafo_1', $home_id);
   $about_parrafo_2 = get_field('about_parrafo_2', $home_id);
   $about_parrafo_3 = get_field('about_parrafo_3', $home_id);
-  
-  // Textos de las Tarjetas
+
   $tarjeta_1_texto = get_field('tarjeta_1_texto', $home_id);
   $tarjeta_2_texto = get_field('tarjeta_2_texto', $home_id);
   $tarjeta_3_texto = get_field('tarjeta_3_texto', $home_id);
 
-  // Imágenes: Íconos de las tarjetas (URLs)
   $icono_1 = get_field('icono_tarjeta_1', $home_id);
   $icono_2 = get_field('icono_tarjeta_2', $home_id);
   $icono_3 = get_field('icono_tarjeta_3', $home_id);
 
-  // Imágenes: Logos de los Premios (URLs)
   $award1 = get_field('award_1', $home_id);
   $award2 = get_field('award_2', $home_id);
   $award3 = get_field('award_3', $home_id);
@@ -30,7 +25,6 @@
 
 <section class="py-20 px-6 bg-white">
   <div class="max-w-[1200px] mx-auto text-center">
-    
     @if($about_titulo)
       <h2 class="text-[32px] sm:text-[36px] font-medium text-[#1c5067] mb-8">
         {{ $about_titulo }}
@@ -54,7 +48,6 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      
       <div class="border border-[#f0f0f0] bg-white p-10 flex flex-col items-center shadow-[0_2px_15px_rgba(0,0,0,0.03)]">
         <div class="h-16 mb-6 flex items-center justify-center">
           @if($icono_1)
@@ -93,7 +86,6 @@
           </p>
         @endif
       </div>
-
     </div>
   </div>
 </section>

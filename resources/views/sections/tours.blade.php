@@ -1,30 +1,27 @@
 @php
-  // 1. Obtenemos el ID del tour actual
   $current_tour_id = get_the_ID();
 
-  // 2. Textos de cabecera (Ahora los busca dentro de tu mismo grupo "Plantilla - Tour")
   $tours_titulo    = get_field('tours_titulo', $current_tour_id);
   $tours_parrafo_1 = get_field('tours_parrafo_1', $current_tour_id);
   $tours_parrafo_2 = get_field('tours_parrafo_2', $current_tour_id);
 
-  // 3. Consulta Dinámica: Buscar páginas que usen la plantilla de tour
   $args = [
-      'post_type'      => 'page',
-      'posts_per_page' => -1, // Todos los tours
-      'post__not_in'   => [$current_tour_id], // Excluye el tour actual
-      'meta_query'     => [
-          [
-              'key'   => '_wp_page_template',
-              'value' => 'template-tour.blade.php'
-          ]
-      ]
+    'post_type'      => 'page',
+    'posts_per_page' => -1,
+    'post__not_in'   => [$current_tour_id],
+    'meta_query'     => [
+      [
+        'key'   => '_wp_page_template',
+        'value' => 'template-tour.blade.php',
+      ],
+    ],
   ];
   $tours_query = new WP_Query($args);
 @endphp
 
 <section class="py-20 px-6 bg-white">
   <div class="max-w-[1200px] mx-auto">
-    
+
     <!-- Cabecera de la sección -->
     <div class="text-center max-w-[900px] mx-auto mb-16">
       @if($tours_titulo)
@@ -32,7 +29,7 @@
           {{ $tours_titulo }}
         </h2>
       @endif
-      
+
       <div class="text-[15px] text-[#555] leading-[1.8] flex flex-col gap-4">
         @if($tours_parrafo_1) <p>{{ $tours_parrafo_1 }}</p> @endif
         @if($tours_parrafo_2) <p>{{ $tours_parrafo_2 }}</p> @endif
@@ -41,30 +38,29 @@
 
     <!-- Grilla de Tours -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      
+
       @if($tours_query->have_posts())
-        @while($tours_query->have_posts()) 
-          @php 
-            $tours_query->the_post(); 
-            
-            // USAMOS TUS CAMPOS EXACTOS DE ACF (Basado en tu captura)
+        @while($tours_query->have_posts())
+          @php
+            $tours_query->the_post();
+
             $imagen      = get_field('tour_bg') ?: get_the_post_thumbnail_url(get_the_ID(), 'large');
-            $duracion    = get_field('tour_duration'); 
-            
-            $dificultad  = get_field('fact_4'); 
-            $grupo       = get_field('fact_1'); 
-            $altitud     = get_field('fact_2'); 
-            
-            $ubicacion   = get_field('tour_route'); 
+            $duracion    = get_field('tour_duration');
+
+            $dificultad  = get_field('fact_4');
+            $grupo       = get_field('fact_1');
+            $altitud     = get_field('fact_2');
+
+            $ubicacion   = get_field('tour_route');
             $precio      = get_field('tour_price');
-            
+
             // Descripción: quitamos etiquetas HTML e imágenes y la cortamos a 15 palabras
             $descripcion = wp_trim_words(strip_tags(get_field('tour_description')), 15, '...');
           @endphp
-          
+
           <!-- Tarjeta individual -->
           <div class="border border-[#eaeaea] bg-white flex flex-col shadow-[0_2px_15px_rgba(0,0,0,0.03)] group">
-            
+
             <!-- Imagen del Tour -->
             <div class="h-[240px] overflow-hidden">
               @if($imagen)
@@ -76,7 +72,7 @@
 
             <!-- Contenido de la Tarjeta -->
             <div class="p-8 flex flex-col flex-grow">
-              
+
               <!-- Meta superior: Duración y Dificultad -->
               <div class="flex justify-between items-center text-[12px] text-[#777] border-b border-[#eaeaea] pb-4 mb-5">
                 <span>{{ $duracion }}</span>

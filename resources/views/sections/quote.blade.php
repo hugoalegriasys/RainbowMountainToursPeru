@@ -6,23 +6,19 @@
 @endphp
 
 <section class="relative py-24 px-6 bg-cover bg-center bg-no-repeat bg-fixed" style="background-image: url('{{ $bg_image }}');">
-  
-  <!-- Overlay oscuro para que el texto resalte -->
   <div class="absolute inset-0 bg-black/60 z-0"></div>
 
-  <!-- Contenido -->
   <div class="relative z-10 max-w-[900px] mx-auto text-center text-white">
     @if($quote_top)
       <p class="italic text-[20px] sm:text-[24px] font-light mb-4 opacity-90">
         {{ $quote_top }}
       </p>
     @endif
-    
+
     @if($quote_bold)
       <h2 class="text-[28px] sm:text-[40px] font-bold leading-[1.2]">
         {{ $quote_bold }}
       </h2>
     @endif
   </div>
-
 </section>

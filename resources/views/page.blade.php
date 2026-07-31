@@ -8,4 +8,4 @@
   @include('sections.destinations')
   @include('sections.faq')
   @include('sections.quote')
-  @endsection
+@endsection

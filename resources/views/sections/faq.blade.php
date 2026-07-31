@@ -1,12 +1,11 @@
 @php
   $home_id = get_option('page_on_front');
-  // Creamos un arreglo con tus preguntas
   $faqs = [];
   for ($i = 1; $i <= 10; $i++) {
-      $faqs[] = [
-          'pregunta' => get_field("faq_{$i}_pregunta", $home_id),
-          'respuesta' => get_field("faq_{$i}_respuesta", $home_id),
-      ];
+    $faqs[] = [
+      'pregunta'  => get_field("faq_{$i}_pregunta", $home_id),
+      'respuesta' => get_field("faq_{$i}_respuesta", $home_id),
+    ];
   }
 @endphp
 
