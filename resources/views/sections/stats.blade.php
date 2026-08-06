@@ -21,19 +21,29 @@
   ];
 @endphp
 
-<section class="bg-[#f8f8f8] py-14 px-6 border-y border-[#eaeaea]">
-  <div class="max-w-[1200px] mx-auto">
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+<section class="bg-white py-16 md:py-24 border-t border-gray-200">
+  <div class="max-w-7xl mx-auto px-4 md:px-6">
+    
+    <!-- Cuadrícula editorial de 1px -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-px bg-gray-200 border border-gray-200">
+      
       @foreach($stats as $stat)
-        <div class="flex flex-col items-center justify-center">
-          <span class="text-[36px] sm:text-[44px] font-bold text-[#db6923] leading-none mb-2">
+        <div class="bg-white flex flex-col items-center justify-center py-12 md:py-16 px-4 group transition-colors duration-500 hover:bg-gray-50">
+          
+          <!-- Número (Elegante y ligero, se vuelve naranja al hacer hover) -->
+          <span class="text-4xl md:text-5xl lg:text-6xl font-light text-gray-900 mb-4 transition-colors duration-500 group-hover:text-[#db5f15]">
             {{ $stat['numero'] ?: '0' }}
           </span>
-          <span class="text-[13px] sm:text-[15px] text-[#555] uppercase tracking-wide">
+          
+          <!-- Texto descriptivo (Pequeño, espaciado y en negrita) -->
+          <span class="text-[10px] md:text-[11px] font-bold text-gray-400 uppercase tracking-widest text-center leading-relaxed">
             {{ $stat['texto'] ?: 'DATA PENDING' }}
           </span>
+          
         </div>
       @endforeach
+
     </div>
+    
   </div>
 </section>

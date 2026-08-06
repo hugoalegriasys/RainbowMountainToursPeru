@@ -19,25 +19,26 @@
   $tours_query = new WP_Query($args);
 @endphp
 
-<section class="py-20 px-6 bg-white">
-  <div class="max-w-[1200px] mx-auto">
+<section class="py-20 md:py-28 bg-white border-t border-gray-200">
+  <div class="max-w-7xl mx-auto px-4 md:px-6">
 
     <!-- Cabecera de la sección -->
-    <div class="text-center max-w-[900px] mx-auto mb-16">
+    <div class="text-center max-w-3xl mx-auto mb-16 md:mb-20">
       @if($tours_titulo)
-        <h2 class="text-[32px] sm:text-[36px] font-medium text-[#1c5067] mb-6">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6 uppercase tracking-[0.1em]">
           {{ $tours_titulo }}
         </h2>
+        <div class="w-12 h-[2px] bg-[#db5f15] mx-auto mb-8"></div>
       @endif
 
-      <div class="text-[15px] text-[#555] leading-[1.8] flex flex-col gap-4">
+      <div class="text-sm md:text-base text-gray-500 font-light leading-relaxed flex flex-col gap-4">
         @if($tours_parrafo_1) <p>{{ $tours_parrafo_1 }}</p> @endif
         @if($tours_parrafo_2) <p>{{ $tours_parrafo_2 }}</p> @endif
       </div>
     </div>
 
-    <!-- Grilla de Tours -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <!-- Grilla de Tours (Corregido para quitar el fondo plomo) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border-t border-l border-gray-200">
 
       @if($tours_query->have_posts())
         @while($tours_query->have_posts())
@@ -58,52 +59,57 @@
             $descripcion = wp_trim_words(strip_tags(get_field('tour_description')), 15, '...');
           @endphp
 
-          <!-- Tarjeta individual -->
-          <div class="border border-[#eaeaea] bg-white flex flex-col shadow-[0_2px_15px_rgba(0,0,0,0.03)] group">
+          <!-- Tarjeta individual con bordes propios (border-r y border-b) -->
+          <div class="bg-white flex flex-col group relative border-r border-b border-gray-200">
 
             <!-- Imagen del Tour -->
-            <div class="h-[240px] overflow-hidden">
+            <div class="h-[250px] overflow-hidden relative bg-black">
               @if($imagen)
-                <img src="{{ $imagen }}" alt="{{ get_the_title() }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                <img src="{{ $imagen }}" alt="{{ get_the_title() }}" class="w-full h-full object-cover opacity-90 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 ease-out">
               @else
-                <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">No Image</div>
+                <div class="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 text-xs uppercase tracking-widest font-bold">No Image</div>
               @endif
             </div>
 
             <!-- Contenido de la Tarjeta -->
-            <div class="p-8 flex flex-col flex-grow">
+            <div class="p-8 md:p-10 flex flex-col flex-grow">
 
               <!-- Meta superior: Duración y Dificultad -->
-              <div class="flex justify-between items-center text-[12px] text-[#777] border-b border-[#eaeaea] pb-4 mb-5">
+              <div class="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-gray-400 border-b border-gray-100 pb-4 mb-6">
                 <span>{{ $duracion }}</span>
                 <span>{{ $dificultad }}</span>
               </div>
 
               <!-- Título y Ubicación -->
-              <h3 class="text-[19px] font-medium text-[#222] mb-2 leading-[1.3]">
-                {{ get_the_title() }}
+              <h3 class="text-lg font-bold text-gray-900 uppercase tracking-[0.1em] mb-2 leading-snug">
+                {!! get_the_title() !!}
               </h3>
-              <p class="text-[13px] text-[#888] mb-4">
+              <p class="text-[11px] font-bold uppercase tracking-widest text-[#db5f15] mb-6">
                 {{ $ubicacion }}
               </p>
 
               <!-- Descripción -->
-              <p class="text-[14px] text-[#555] leading-[1.7] mb-6 flex-grow line-clamp-4">
+              <p class="text-sm text-gray-500 font-light leading-relaxed mb-8 flex-grow">
                 {{ $descripcion }}
               </p>
 
               <!-- Meta inferior: Grupo y Altitud -->
-              <div class="flex justify-between items-center text-[13px] text-[#666] border-b border-[#eaeaea] pb-5 mb-5">
+              <div class="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-gray-400 border-b border-gray-100 pb-4 mb-6">
                 <span>{{ $grupo }}</span>
                 <span>{{ $altitud }}</span>
               </div>
 
               <!-- Precio y Botón -->
-              <div class="flex justify-between items-center mt-auto">
-                <div class="text-[13px] text-[#666]">
-                  From $<span class="text-[22px] font-bold text-[#333] ml-1">{{ $precio }}</span> <span class="text-[12px]">per person</span>
+              <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6 mt-auto">
+                <div class="flex flex-col">
+                  <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Starting from</span>
+                  <div class="text-gray-900 mt-1">
+                    <span class="text-2xl font-bold">${{ $precio }}</span>
+                    <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest ml-1">USD</span>
+                  </div>
                 </div>
-                <a href="{{ get_permalink() }}" class="bg-[#db6923] text-white font-bold text-[13px] tracking-[0.3px] px-5 py-3 transition-colors duration-200 hover:bg-[#c25a1b]">
+                
+                <a href="{{ get_permalink() }}" class="w-full xl:w-auto text-center border border-[#db5f15] text-[#db5f15] group-hover:bg-[#db5f15] group-hover:text-white font-bold text-[11px] py-4 px-6 transition-colors duration-300 uppercase tracking-[0.15em]">
                   View Itinerary
                 </a>
               </div>
@@ -113,8 +119,8 @@
         @endwhile
         @php wp_reset_postdata(); @endphp
       @else
-        <div class="col-span-1 md:col-span-3 text-center py-10">
-          <p class="text-gray-500 text-[15px]">More adventures coming soon...</p>
+        <div class="col-span-1 md:col-span-2 lg:col-span-3 text-center py-20 bg-white border-b border-r border-gray-200">
+          <p class="text-gray-500 text-sm font-light uppercase tracking-widest">More adventures coming soon...</p>
         </div>
       @endif
 
