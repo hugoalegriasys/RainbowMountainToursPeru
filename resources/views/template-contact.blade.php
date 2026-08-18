@@ -14,7 +14,7 @@
     $hero_sub      = get_field('contacto_hero_subtitulo') ?: ($is_es ? 'Estamos aquí para ayudarte a planificar tu aventura en Perú. Nuestro equipo local responderá todas tus consultas sobre tours, disponibilidad, precios y recomendaciones.' : 'We are here to help you plan your adventure in Peru. Our local team will answer all your questions about tours, availability, prices, and travel recommendations. Average response time: under 30 minutes during office hours.');
 
     $dir_texto     = get_field('contacto_dir_texto') ?: "265 Garcilaso Street\nOffice 7 – Historic Center\nCusco, Peru";
-    $wa_num        = get_field('contacto_wa_numero') ?: '+51 953 486 045';
+    $wa_num        = get_field('contacto_wa_numero') ?: '+51 953 486 045';  
     $email         = get_field('contacto_email') ?: 'info@rainbowmountainperu.com';
     $horario       = get_field('contacto_horario') ?: "Monday – Friday\n9:00 am – 1:00 pm / 3:00 pm – 7:00 pm\nSaturday\n9:00 am – 1:00 pm";
 
@@ -25,8 +25,7 @@
   <!-- HERO SECTION: Elegante, overlay sólido y tipografía espaciada -->
   <section class="relative w-full h-[70vh] min-h-[500px] flex items-center justify-center text-center overflow-hidden">
     <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url('{{ is_array($hero_img) ? $hero_img['url'] : $hero_img }}');"></div>
-    <div class="absolute inset-0 bg-black/60"></div>
-
+    <div class="absolute inset-0 bg-black/60"></div><
     <div class="relative z-10 max-w-4xl px-4 mx-auto pt-20">
       <h1 class="text-4xl md:text-5xl font-bold text-white mb-6 uppercase tracking-[0.2em]">
         {{ $hero_titulo }}

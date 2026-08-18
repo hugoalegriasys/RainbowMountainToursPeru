@@ -134,14 +134,18 @@
             </div>
         </section>
 
-        <!-- STATS SECTION: Oscuro y elegante -->
-        <section class="bg-gray-900 border-t-2 border-[#db5f15] p-12 md:p-16 text-white">
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 text-center divide-x divide-gray-800">
+        <!-- STATS SECTION: Claro, elegante y minimalista (Estilo Editorial) -->
+        <section class="w-full">
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-px bg-gray-200 border border-gray-200">
                 @for($i = 1; $i <= 6; $i++)
                     @if(get_field('stat'.$i.'_number'))
-                      <div class="px-2">
-                        <span class="block text-3xl md:text-4xl font-bold mb-2 text-[#db5f15]">{{ get_field('stat'.$i.'_number') }}</span>
-                        <span class="text-xs font-medium text-gray-400 uppercase tracking-widest">{{ get_field('stat'.$i.'_title') }}</span>
+                      <div class="bg-white flex flex-col items-center justify-center py-10 md:py-12 px-4 group transition-colors duration-500 hover:bg-gray-50">
+                        <span class="block text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 mb-3 transition-colors duration-500 group-hover:text-[#db5f15]">
+                            {{ get_field('stat'.$i.'_number') }}
+                        </span>
+                        <span class="text-[9px] md:text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">
+                            {{ get_field('stat'.$i.'_title') }}
+                        </span>
                       </div>
                     @endif
                 @endfor

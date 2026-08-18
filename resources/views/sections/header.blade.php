@@ -1,7 +1,3 @@
-{{--
-  Template Name: Contact Us
---}}
-
 @php
   $home_id = get_option('page_on_front');
 
@@ -19,19 +15,7 @@
     $t++;
   }
 
-  $args_menu = [
-    'post_type'      => 'page',
-    'posts_per_page' => -1,
-    'meta_query'     => [
-      [
-        'key'   => '_wp_page_template',
-        'value' => 'template-tour.blade.php',
-      ],
-    ],
-  ];
-  $tours_menu_query = new WP_Query($args_menu);
-
-  // 1. Buscamos la página de la guía (Movido aquí para que funcione en PC y Móvil)
+  // 1. Buscamos la página de la guía
   $guide_page = get_page_by_path('rainbow-mountain-guide');
   $guide_url = '#';
 
@@ -53,7 +37,7 @@
     <!-- BARRA SUPERIOR (LOGO Y ELEMENTOS) -->
     <div class="flex flex-row items-center justify-between py-2 gap-4 pb-4 md:pb-6">
       
-      <!-- Logo (Siempre visible) -->
+      <!-- Logo -->
       <a href="{{ home_url('/') }}" class="flex-shrink-0 md:mr-10 relative z-50" aria-label="Salkantay Trekking home">
         <img src="{{ get_template_directory_uri() }}/public/images/logo.png" alt="Salkantay Trekking" class="h-10 md:h-14 w-auto block">
       </a>
@@ -110,29 +94,15 @@
       </div>
     </div>
 
-    <!-- NAVEGACIÓN PRINCIPAL DE ESCRITORIO (Oculta en Móvil) -->
+    <!-- NAVEGACIÓN PRINCIPAL DE ESCRITORIO -->
     <nav class="hidden md:block w-full mt-4">
       <ul class="flex justify-center items-center gap-10">
-        <li class="relative group">
-          <a href="#" class="flex items-center gap-1.5 text-white text-[12px] uppercase tracking-[0.15em] hover:text-[#db5f15] transition-colors whitespace-nowrap font-bold py-2">
+        
+        <!-- Enlace Simple a Tours (Sin Dropdown) -->
+        <li>
+          <a href="{{ home_url(function_exists('pll_current_language') && pll_current_language() == 'es' ? '/es/tours-montana-de-colores/' : '/rainbow-mountain-tours/') }}" class="text-white text-[12px] uppercase tracking-[0.15em] hover:text-[#db5f15] transition-colors whitespace-nowrap font-bold py-2">
             @if(function_exists('pll_current_language') && pll_current_language() == 'es') Tours Montaña de Colores @else Rainbow Mountain Tours @endif
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 256 256"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path></svg>
           </a>
-          <!-- Dropdown Aplanado y Elegante -->
-          <ul class="absolute left-1/2 -translate-x-1/2 top-full mt-0 w-[300px] bg-[#0a0a0a] py-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-50 border-t-2 border-[#db5f15]">
-            @if($tours_menu_query->have_posts())
-              @while($tours_menu_query->have_posts())
-                @php $tours_menu_query->the_post(); @endphp
-                <li>
-                  <a href="{{ get_permalink() }}" class="block px-8 py-3 text-[11px] text-gray-300 uppercase tracking-widest font-light hover:text-white hover:bg-white/5 transition-colors leading-relaxed">
-                    {!! get_the_title() !!}
-                  </a>
-                </li>
-              @endwhile
-            @else
-              <li><span class="block px-8 py-3 text-[11px] text-white/50 uppercase tracking-widest">No tours available yet.</span></li>
-            @endif
-          </ul>
         </li>
 
         <li>
@@ -153,30 +123,15 @@
       </ul>
     </nav>
 
-    <!-- MENÚ DESPLEGABLE MÓVIL (Se abre con Javascript) -->
+    <!-- MENÚ MÓVIL -->
     <div id="mobile-menu" class="hidden md:hidden w-full absolute top-full left-0 bg-white flex-col border-t border-gray-200 z-40 max-h-[85vh] overflow-y-auto">
       
-      <!-- Navegación Móvil -->
       <nav class="flex flex-col text-gray-900 border-b border-gray-100">
-        <!-- Acordeón de Tours -->
-        <div class="border-b border-gray-100">
-          <button onclick="document.getElementById('mobile-tours-list').classList.toggle('hidden')" class="w-full flex justify-between items-center px-6 py-5 font-bold uppercase tracking-[0.15em] text-[11px] focus:outline-none hover:text-[#db5f15]">
-            @if(function_exists('pll_current_language') && pll_current_language() == 'es') Tours Montaña de Colores @else Rainbow Mountain Tours @endif
-            <svg class="w-4 h-4 text-[#db5f15]" fill="currentColor" viewBox="0 0 256 256"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path></svg>
-          </button>
-          <div id="mobile-tours-list" class="hidden bg-gray-50 flex-col pb-2">
-            @php $tours_menu_query->rewind_posts(); @endphp
-            @if($tours_menu_query->have_posts())
-              @while($tours_menu_query->have_posts())
-                @php $tours_menu_query->the_post(); @endphp
-                <a href="{{ get_permalink() }}" class="block px-8 py-4 text-[10px] font-semibold text-gray-500 uppercase tracking-widest hover:text-[#db5f15] border-b border-gray-200/50 last:border-0 leading-relaxed">
-                  {!! get_the_title() !!}
-                </a>
-              @endwhile
-              @php wp_reset_postdata(); @endphp
-            @endif
-          </div>
-        </div>
+        
+        <!-- Enlace Simple a Tours Móvil (Sin Acordeón) -->
+        <a href="{{ home_url(function_exists('pll_current_language') && pll_current_language() == 'es' ? '/es/tours-montana-de-colores/' : '/rainbow-mountain-tours/') }}" class="block px-6 py-5 border-b border-gray-100 font-bold uppercase tracking-[0.15em] text-[11px] hover:text-[#db5f15]">
+          @if(function_exists('pll_current_language') && pll_current_language() == 'es') Tours Montaña de Colores @else Rainbow Mountain Tours @endif
+        </a>
 
         <a href="{{ $guide_url }}" class="block px-6 py-5 border-b border-gray-100 font-bold uppercase tracking-[0.15em] text-[11px] hover:text-[#db5f15]">
           @if(function_exists('pll_current_language') && pll_current_language() == 'es') Guía de Viaje @else Travel Guide @endif
@@ -189,7 +144,7 @@
         </a>
       </nav>
 
-      <!-- Extras Móvil (Banderas, Top Links, Botón) -->
+      <!-- Extras Móvil -->
       <div class="px-6 py-8 bg-gray-50 flex flex-col gap-6">
         @if(!empty($top_links))
           <ul class="flex flex-wrap items-center gap-x-6 gap-y-3 text-[10px] font-bold text-gray-500 uppercase tracking-widest">

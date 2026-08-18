@@ -9,6 +9,9 @@
 @php
   $post_id = get_the_ID();
 
+  // Obtenemos el ID de WeTravel
+  $wetravel_id = get_field('wetravel_id', $post_id);
+
   $bg          = get_field('tour_bg', $post_id) ?: 'https://images.unsplash.com/photo-1526392060635-9d6019884377?q=80&w=1920&auto=format&fit=crop';
   $duration    = get_field('tour_duration', $post_id);
   $title       = get_the_title();
@@ -137,6 +140,7 @@
   .sidebar-list li::before { display: none !important; }
   .sidebar-list .item-value { font-weight: 600 !important; font-size: 14px !important; color: var(--black) !important; display: block; }
   .sidebar-list .item-label { font-size: 10px !important; text-transform: uppercase; color: var(--gray-text) !important; display: block; margin-top: 0 !important; letter-spacing: 1px; font-weight: 600;}
+  
   .sidebar-buttons { display: flex; flex-direction: column; padding: 24px; gap: 10px !important; border-top: 1px solid var(--border-color); margin-top: 20px;}
   .sidebar-buttons a { width: 100%; text-align: center; padding: 16px 10px !important; font-weight: 700 !important; font-size: 12px !important; text-transform: uppercase; text-decoration: none; letter-spacing: 2px; transition: all 0.2s;}
   .sidebar-buttons .book-online { background: var(--orange) !important; color: #fff !important; border: 1px solid var(--orange);}
@@ -284,10 +288,19 @@
       @if($meals)<li><span class="item-value">{{ $meals }}</span><span class="item-label">Meals</span></li>@endif
       <li><span class="item-value">Locally Owned & Operated</span><span class="item-label">Your Team</span></li>
     </ul>
+    
     <div class="sidebar-buttons">
-      <a class="book-online" href="#booking">Book Online</a>
-      <a href="javascript:void(0);" onclick="document.getElementById('modal-enquire').classList.remove('hidden')" class="enquire" href="#contact">Enquire Now</a>
+      @if($wetravel_id)
+        <!-- Botón de WeTravel para el sidebar superior -->
+        <a class="book-online wtrvl-checkout_button" id="wt_{{ $wetravel_id }}_top" href="https://www.wetravel.com/checkout_embed?uuid={{ $wetravel_id }}">Book Online</a>
+      @else
+        <!-- Botón clásico por si no hay ID configurado -->
+        <a class="book-online" href="#booking">Book Online</a>
+      @endif
+      
+      <a href="javascript:void(0);" onclick="document.getElementById('modal-enquire').classList.remove('hidden')" class="enquire">Enquire Now</a>
     </div>
+    
     <p class="sidebar-help">Got questions? Reach out anytime via <strong>WhatsApp</strong>.</p>
   </aside>
 </div>
@@ -519,57 +532,76 @@
         </div>
 
     </div>
-  <aside class="tour-page-sidebar">
+<aside class="tour-page-sidebar">
 
     <div class="booking-widget" style="position: sticky; top: 120px;">
       <div class="booking-header">Booking</div>
 
-      <div class="booking-info">
-        <h3 class="booking-title">{{ get_the_title() }}</h3>
-        <div class="booking-price" id="total-price">US$350.00</div>
-      </div>
+      @if(!$wetravel_id)
+        <!-- Ocultamos el precio estático si WeTravel está activo, porque el widget ya trae sus propios precios -->
+        <div class="booking-info">
+          <h3 class="booking-title">{{ get_the_title() }}</h3>
+          <div class="booking-price" id="total-price">US$350.00</div>
+        </div>
+      @endif
 
       <div class="booking-divider">Choose your travel date</div>
 
-      <div class="booking-body">
+      <div class="booking-body" style="padding: 0;">
 
-        <div class="booking-step">
-          <span class="step-num">1</span> Select Date
-        </div>
+        @if($wetravel_id)
+          
+          <!-- CALENDARIO REAL DE WETRAVEL (INLINE) -->
+          <iframe 
+            src="https://www.wetravel.com/checkout_embed?uuid={{ $wetravel_id }}" 
+            style="width: 100%; border: none; min-height: 850px;" 
+            frameborder="0">
+          </iframe>
 
-        <div class="calendar-mockup">
-          <div class="cal-header">
-            <span id="prev-month" style="cursor:pointer; padding: 0 10px; font-size: 16px;">&lt;</span>
-            <span id="cal-month-year"></span>
-            <span id="next-month" style="cursor:pointer; padding: 0 10px; font-size: 16px;">&gt;</span>
+        @else
+
+          <!-- CALENDARIO DE RESPALDO (WHATSAPP) -->
+          <div style="padding: 24px 20px;">
+            <div class="booking-step">
+              <span class="step-num">1</span> Select Date
+            </div>
+
+            <div class="calendar-mockup">
+              <div class="cal-header">
+                <span id="prev-month" style="cursor:pointer; padding: 0 10px; font-size: 16px;">&lt;</span>
+                <span id="cal-month-year"></span>
+                <span id="next-month" style="cursor:pointer; padding: 0 10px; font-size: 16px;">&gt;</span>
+              </div>
+              <div class="cal-grid" id="cal-grid">
+              </div>
+            </div>
+            <div class="cal-legend">
+               <div class="legend-item"><div class="legend-box" style="background: #ffefe6;"></div> <span><strong>1+ travelers</strong> Solo or any group size</span></div>
+               <div class="legend-item"><div class="legend-box" style="background: #e6f7ff;"></div> <span><strong>2+ travelers</strong> Minimum 2 people required</span></div>
+            </div>
+
+            <div class="booking-step">
+              <span class="step-num">2</span> Passengers <span class="step-note">(First select a date)</span>
+            </div>
+
+            <div class="pax-selector">
+               <div>Pax<br><span style="font-size: 11px; color:#999;">Pax</span></div>
+               <div class="pax-controls">
+                  <button type="button" class="pax-btn btn-minus">-</button>
+                  <input type="text" class="pax-input" id="pax-count" value="1" readonly>
+                  <button type="button" class="pax-btn btn-plus">+</button>
+               </div>
+            </div>
+
+            <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 12px;">
+              <a href="#" id="btn-whatsapp" target="_blank" style="display: flex; align-items: center; justify-content: center; background: #25D366; color: #fff; padding: 14px; border-radius: 0px; font-weight: bold; text-decoration: none; font-size: 16px; transition: background 0.3s;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256" style="margin-right: 8px;"><path d="M187.58,144.84l-32-16a8,8,0,0,0-8,1.5l-19.24,16a80.38,80.38,0,0,1-40-40l16-19.24a8,8,0,0,0,1.5-8l-16-32a8,8,0,0,0-9.73-4.28C74.36,44.52,64,57.14,64,72a128.14,128.14,0,0,0,128,128c14.86,0,27.48-10.36,29.18-16.11A8,8,0,0,0,187.58,144.84Z"></path></svg>
+                Book via WhatsApp
+              </a>
+            </div>
           </div>
-          <div class="cal-grid" id="cal-grid">
-          </div>
-        </div>
-        <div class="cal-legend">
-           <div class="legend-item"><div class="legend-box" style="background: #ffefe6;"></div> <span><strong>1+ travelers</strong> Solo or any group size</span></div>
-           <div class="legend-item"><div class="legend-box" style="background: #e6f7ff;"></div> <span><strong>2+ travelers</strong> Minimum 2 people required</span></div>
-        </div>
 
-        <div class="booking-step">
-          <span class="step-num">2</span> Passengers <span class="step-note">(First select a date)</span>
-        </div>
-
-        <div class="pax-selector">
-           <div>Pax<br><span style="font-size: 11px; color:#999;">Pax</span></div>
-           <div class="pax-controls">
-              <button type="button" class="pax-btn btn-minus">-</button>
-              <input type="text" class="pax-input" id="pax-count" value="1" readonly>
-              <button type="button" class="pax-btn btn-plus">+</button>
-           </div>
-        </div>
-
-        <div style="margin-top: 30px;">
-          <a href="#" id="btn-whatsapp" target="_blank" style="display: flex; align-items: center; justify-content: center; background: #25D366; color: #fff; padding: 14px; border-radius: 6px; font-weight: bold; text-decoration: none; font-size: 16px; transition: background 0.3s;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256" style="margin-right: 8px;"><path d="M187.58,144.84l-32-16a8,8,0,0,0-8,1.5l-19.24,16a80.38,80.38,0,0,1-40-40l16-19.24a8,8,0,0,0,1.5-8l-16-32a8,8,0,0,0-9.73-4.28C74.36,44.52,64,57.14,64,72a128.14,128.14,0,0,0,128,128c14.86,0,27.48-10.36,29.18-16.11A8,8,0,0,0,187.58,144.84Z"></path></svg>
-            Book via WhatsApp
-          </a>
-        </div>
+        @endif
 
       </div>
     </div>
@@ -880,5 +912,10 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 </script>
+
+@if($wetravel_id)
+  <!-- WeTravel Script para el Pop-up -->
+  <script src="https://cdn.wetravel.com/widgets/embed_checkout.js"></script>
+@endif
 
 @endsection
