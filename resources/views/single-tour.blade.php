@@ -1,6 +1,8 @@
 {{--
-  Template Name: Plantilla Tour
+  Template Name: Plantilla de Tour
+  Template Post Type: page, tour
 --}}
+
 
 @extends('layouts.app')
 

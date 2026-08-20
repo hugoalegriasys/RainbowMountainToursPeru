@@ -1,20 +1,43 @@
 @php
   $current_tour_id = get_the_ID();
 
+  // 1. Intentamos obtener los textos de ACF
   $tours_titulo    = get_field('tours_titulo', $current_tour_id);
   $tours_parrafo_1 = get_field('tours_parrafo_1', $current_tour_id);
   $tours_parrafo_2 = get_field('tours_parrafo_2', $current_tour_id);
 
+  // 2. SOLUCIÓN: Si estamos en Español y ACF nos devuelve vacío, forzamos los textos
+  if (function_exists('pll_current_language') && pll_current_language() == 'es') {
+      
+      if (empty($tours_titulo)) {
+          $tours_titulo = 'DESCUBRE LOS MEJORES TOURS A LA MONTAÑA DE COLORES EN PERÚ';
+      }
+      
+      if (empty($tours_parrafo_1)) {
+          $tours_parrafo_1 = 'Experimenta aventuras inolvidables en la Montaña de Colores, uno de los destinos más espectaculares de los Andes peruanos.';
+      }
+      
+      if (empty($tours_parrafo_2)) {
+          $tours_parrafo_2 = 'Cada tour es dirigido por guías locales profesionales comprometidos en brindar una experiencia segura, agradable y memorable. Ya sea que elijas una caminata clásica a la Montaña de Colores, la ruta escénica del Valle Rojo, o una aventura privada, disfrutarás de impresionantes vistas panorámicas, auténtica cultura andina y un servicio excepcional de principio a fin.';
+      }
+  }
+
+  // 3. Configuración de la grilla
   $args = [
-    'post_type'      => 'page',
-    'posts_per_page' => -1,
+    // Buscamos tanto en páginas como en tours para no fallar
+    'post_type'      => ['page', 'tour'], 
+    'posts_per_page' => 3,
     'post__not_in'   => [$current_tour_id],
+    
+    // HEMOS DESACTIVADO EL FILTRO DE PLANTILLA TEMPORALMENTE
+    /* 
     'meta_query'     => [
       [
         'key'   => '_wp_page_template',
-        'value' => 'template-tour.blade.php',
+        'value' => 'single-tour.blade.php',
       ],
-    ],
+    ], 
+    */
   ];
   $tours_query = new WP_Query($args);
 @endphp
@@ -124,6 +147,13 @@
         </div>
       @endif
 
+    </div> <!-- ¡Cierre del Grid movido correctamente aquí! -->
+
+    <!-- Nuevo Botón Ver Todos los Tours (Ahora está FUERA del grid) -->
+    <div class="mt-12 text-center">
+      <a href="{{ home_url('/rainbow-mountain-tours/') }}" class="inline-block bg-[#db5f15] text-white font-bold text-sm py-4 px-10 uppercase tracking-[0.15em] hover:bg-gray-900 transition-colors duration-300">
+        View All Tours
+      </a>
     </div>
   </div>
 </section>

@@ -26,17 +26,13 @@
   $grid_subtitle = get_field('grid_subtitle');
 
   // Consulta para traer TODOS los tours (que usan la plantilla template-tour)
+  // Consulta para traer TODOS los tours (desde el nuevo CPT)
   $args_tours = [
-    'post_type'      => 'page',
+    'post_type'      => 'tour', // Cambiamos 'page' por 'tour'
     'posts_per_page' => -1,
-    'orderby'        => 'menu_order', // Respeta el orden 1, 2, 3 que pusimos antes
+    'orderby'        => 'menu_order', 
     'order'          => 'ASC',
-    'meta_query'     => [
-      [
-        'key'   => '_wp_page_template',
-        'value' => 'template-tour.blade.php',
-      ],
-    ],
+    // Ya no necesitamos el meta_query de la plantilla porque todos los post_type 'tour' son tours
   ];
   $tours_query = new WP_Query($args_tours);
 @endphp

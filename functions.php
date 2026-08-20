@@ -94,3 +94,42 @@ function dinamizar_lista_de_tours( $tag, $replace ) {
 
     return $tag;
 }
+
+// Registrar Custom Post Type para Tours
+function registrar_cpt_tours() {
+    $labels = array(
+        'name'                  => _x( 'Tours', 'Post type general name', 'textdomain' ),
+        'singular_name'         => _x( 'Tour', 'Post type singular name', 'textdomain' ),
+        'menu_name'             => _x( 'Tours', 'Admin Menu text', 'textdomain' ),
+        'name_admin_bar'        => _x( 'Tour', 'Add New on Toolbar', 'textdomain' ),
+        'add_new'               => __( 'Añadir nuevo', 'textdomain' ),
+        'add_new_item'          => __( 'Añadir nuevo Tour', 'textdomain' ),
+        'new_item'              => __( 'Nuevo Tour', 'textdomain' ),
+        'edit_item'             => __( 'Editar Tour', 'textdomain' ),
+        'view_item'             => __( 'Ver Tour', 'textdomain' ),
+        'all_items'             => __( 'Todos los Tours', 'textdomain' ),
+        'search_items'          => __( 'Buscar Tours', 'textdomain' ),
+        'not_found'             => __( 'No se encontraron tours.', 'textdomain' ),
+        'not_found_in_trash'    => __( 'No hay tours en la papelera.', 'textdomain' ),
+    );
+
+    $args = array(
+        'labels'             => $labels,
+        'public'             => true,
+        'publicly_queryable' => true,
+        'show_ui'            => true,
+        'show_in_menu'       => true,
+        'query_var'          => true,
+        'rewrite'            => array( 'slug' => 'tours' ), // Esto hará que tus URLs sean midominio.com/tours/nombre-del-tour
+        'capability_type'    => 'post',
+        'has_archive'        => true, // Permite tener una página de archivo
+        'hierarchical'       => true, // Permite tener orden (menu_order) como las páginas
+        'menu_position'      => 5,
+        'menu_icon'          => 'dashicons-backpack', // Ícono de mochila
+        'supports'           => array( 'title', 'editor', 'thumbnail', 'page-attributes', 'revisions' ),
+        'show_in_rest'       => true, // Habilita el editor de bloques (Gutenberg) si lo necesitas
+    );
+
+    register_post_type( 'tour', $args );
+}
+add_action( 'init', 'registrar_cpt_tours' );
